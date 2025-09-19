@@ -26,8 +26,6 @@ const UniversityCourses = () => {
     }
   };
 
-  console.log(state);
-
   useEffect(() => {
     fetchData();
     fetchApplicants();

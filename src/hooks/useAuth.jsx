@@ -6,7 +6,6 @@ import {
   setError,
   clearUserInfo,
 } from "../features/authSlice";
-import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -147,6 +146,21 @@ const useAuth = () => {
       console.log(error?.messsage);
     }
   };
+  const UserList = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/auth/user",
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error?.messsage);
+    }
+  };
 
   const toggleUsersStatus = async (id, currentStatus, refresh) => {
     try {
@@ -179,6 +193,7 @@ const useAuth = () => {
     resetPassword,
     changePassword,
     UsersList,
+    UserList,
     toggleUsersStatus,
   };
 };

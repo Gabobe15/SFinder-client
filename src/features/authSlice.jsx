@@ -9,18 +9,14 @@ function getParsedUser() {
   if (!rawUser) return null;
 
   try {
-    return typeof rawUser === "string"
-      ? JSON.parse(rawUser)
-      : rawUser; // if universal-cookie already parsed it
+    return typeof rawUser === "string" ? JSON.parse(rawUser) : rawUser; // if universal-cookie already parsed it
   } catch (e) {
     console.error("Invalid user cookie, clearing:", e);
     cookies.remove("user", { path: "/" });
-    cookies.remove("token", {path: '/'})
+    cookies.remove("token", { path: "/" });
     return null;
   }
 }
-
-
 
 const initialState = {
   isLoading: false,
@@ -46,7 +42,12 @@ const authSlice = createSlice({
       state.error = null;
 
       // persist cookies here
-      cookies.set("user", JSON.stringify(userData), { path: "/" });
+      cookies.set("user", JSON.stringify(userData), {
+        path: "/",
+        secure: false,
+        sameSite: "lax",
+        maxAge: 48 * 60 * 60,
+      });
 
       cookies.set("token", state.token, {
         path: "/",

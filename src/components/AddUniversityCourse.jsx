@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import useCourse from "../hooks/useCourse";
 import useUniversity from "../hooks/useUniversity";
+import useAuth from "../hooks/useAuth";
 
 const AddUniversityCourse = () => {
   const { getCourses } = useCourse();
+  const { UserList } = useAuth();
   const { addUniversityCourses } = useUniversity();
 
   const [courses, setCourses] = useState([]);
+  const [category, setCategory] = useState(null);
 
   const [form, setForm] = useState({
     available_slots: "",
@@ -19,9 +22,14 @@ const AddUniversityCourse = () => {
     const data = await getCourses();
     setCourses(data || []);
   };
+  const fetchCategory = async () => {
+    const data = await UserList();
+    setCategory(data || {});
+  };
 
   useEffect(() => {
     fetchCourses();
+    fetchCategory();
   }, []);
 
   const handleChange = (e) => {
@@ -40,15 +48,9 @@ const AddUniversityCourse = () => {
     });
   };
 
-  const {
-    available_slots,
-    course_id,
-    requirements,
-    deadline,
-  } = form;
+  const { available_slots, course_id, requirements, deadline } = form;
 
-
-  console.log("courses", courses);
+  console.log("category", category);
 
   return (
     <div>
@@ -64,11 +66,20 @@ const AddUniversityCourse = () => {
             required
           >
             <option value="">-- Select Course --</option>
-            {courses.map((cat) => (
+
+            {courses
+              .filter((course) => course.category?.name == category?.study)
+              .map((data) => (
+                <option key={data.id} value={data.id}>
+                  {data.course}
+                </option>
+              ))}
+
+            {/* {courses.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.course}
               </option>
-            ))}
+            ))} */}
           </select>
         </div>
         <div>
