@@ -1,6 +1,6 @@
 import { Box, Container, Typography } from "@mui/material";
 
-const Footers = () => {
+const Footer = () => {
   return (
     <Box
       sx={{
@@ -37,4 +37,4 @@ const Footers = () => {
   );
 };
 
-export default Footers;
+export default Footer;

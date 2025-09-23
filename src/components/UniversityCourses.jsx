@@ -34,7 +34,7 @@ const UniversityCourses = () => {
   return (
     <div>
       <h1>Users</h1>
-      <table border="1" width={"95%"}>
+      <table border="1" width={"100%"}>
         <thead>
           <tr>
             <th>Course</th>

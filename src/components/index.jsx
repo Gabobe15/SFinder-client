@@ -1,8 +1,9 @@
-export { default as Headers } from "./Header";
-export { default as Footers } from "./Footer";
+export { default as Header } from "./Header";
+export { default as Footer } from "./Footer";
 export { default as Navlink } from "./Navlink";
 export { default as ListUser } from "./ListUser";
 export { default as CourseCategory } from "./CourseCategory";
 export { default as AddCategory } from "./AddCategory";
 export { default as AddCourse } from "./AddCourse";
 export { default as AddUniversityCourse } from "./AddUniversityCourse";
+export { default as ApplicationTable } from "./ApplicationTable";

@@ -2,6 +2,18 @@ import { useEffect, useState } from "react";
 import useCourse from "../hooks/useCourse";
 import useUniversity from "../hooks/useUniversity";
 import useAuth from "../hooks/useAuth";
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { toast } from "react-toastify";
 
 const AddUniversityCourse = () => {
   const { getCourses } = useCourse();
@@ -10,6 +22,7 @@ const AddUniversityCourse = () => {
 
   const [courses, setCourses] = useState([]);
   const [category, setCategory] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     available_slots: "",
@@ -19,12 +32,21 @@ const AddUniversityCourse = () => {
   });
 
   const fetchCourses = async () => {
-    const data = await getCourses();
-    setCourses(data || []);
+    try {
+      const data = await getCourses();
+      setCourses(data || []);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
   };
+
   const fetchCategory = async () => {
-    const data = await UserList();
-    setCategory(data || {});
+    try {
+      const data = await UserList();
+      setCategory(data || {});
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   };
 
   useEffect(() => {
@@ -39,85 +61,134 @@ const AddUniversityCourse = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await addUniversityCourses(form);
-    setForm({
-      available_slots: "",
-      course_id: "",
-      requirements: "",
-      deadline: "",
-    });
+
+    // Validation
+    if (
+      !form.course_id ||
+      !form.available_slots ||
+      !form.requirements ||
+      !form.deadline
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await addUniversityCourses({
+        available_slots: Number(form.available_slots),
+        course_id: Number(form.course_id),
+        requirements: form.requirements,
+        deadline: form.deadline,
+        university: category?.id,
+      });
+
+      toast.success("Course added successfully!");
+
+      // Reset form
+      setForm({
+        available_slots: "",
+        course_id: "",
+        requirements: "",
+        deadline: "",
+      });
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const { available_slots, course_id, requirements, deadline } = form;
 
-  console.log("category", category);
-
   return (
-    <div>
-      <h2>AddCourse</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="course_id">Course:</label>
-          <select
-            name="course_id"
-            id="course_id"
-            value={course_id}
-            onChange={handleChange}
-            required
-          >
-            <option value="">-- Select Course --</option>
+    <Box component={"form"} onSubmit={handleSubmit}>
+      <Typography variant="h4" gutterBottom mb={3}>
+        Add Program
+      </Typography>
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 7 }}>
+          <FormControl fullWidth variant="outlined" size="small">
+            <InputLabel id="course_id-select-label">Course</InputLabel>
+            <Select
+              labelId="course_id-select-label"
+              id="course_id-select"
+              name="course_id"
+              value={course_id}
+              onChange={handleChange}
+              label="Course"
+              required
+            >
+              <MenuItem value="" disabled>
+                Select a course
+              </MenuItem>
+              {courses
+                .filter((course) => course.category?.name === category?.study)
+                .map(({ course, id }) => (
+                  <MenuItem key={id} value={id}>
+                    {" "}
+                    {/* Changed to value={id} */}
+                    {course}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+        </Grid>
 
-            {courses
-              .filter((course) => course.category?.name == category?.study)
-              .map((data) => (
-                <option key={data.id} value={data.id}>
-                  {data.course}
-                </option>
-              ))}
-
-            {/* {courses.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.course}
-              </option>
-            ))} */}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="requirements">Requirements:</label>
-          <input
-            id="requirements"
-            type="text"
+        <Grid size={{ xs: 12, md: 7 }}>
+          <TextField
+            fullWidth
             name="requirements"
             value={requirements}
             onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="slots">Available Slot:</label>
-          <input
-            id="slots"
             type="text"
+            required
+            label="Requirements"
+            multiline
+            rows={3}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 7 }}>
+          <TextField
+            fullWidth
             name="available_slots"
             value={available_slots}
             onChange={handleChange}
+            type="number"
             required
+            label="Available Slots"
+            inputProps={{ min: 1 }}
           />
-        </div>
-        <div>
-          <label htmlFor="deadline">Deadline:</label>
-          <input
-            id="deadline"
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 7 }}>
+          <TextField
+            fullWidth
             type="date"
             name="deadline"
             value={deadline}
             onChange={handleChange}
+            label="Deadline"
+            InputLabelProps={{ shrink: true }}
             required
+            slotProps={{ min: new Date().toISOString().split("T")[0] }} // Disable past dates
           />
-        </div>
-        <button type="submit"> Add Course</button>
-      </form>
-    </div>
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 7 }}>
+          <Button
+            variant="contained"
+            type="submit"
+            fullWidth
+            disabled={loading}
+          >
+            {loading ? "Adding Course..." : "Add Course"}
+          </Button>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

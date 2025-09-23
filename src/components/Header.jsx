@@ -19,7 +19,10 @@ const Headers = () => {
           padding: "0 20px",
         }}
       >
-        <h2> <i>Scholarship finder</i></h2>
+        <h2>
+          {" "}
+          <i>Scholarship finder</i>
+        </h2>
         <Navlink />
         {token && name && (
           <button
@@ -38,7 +41,6 @@ const Headers = () => {
           </button>
         )}
       </div>
-      <h4>Hello {name ?? "Guest"}</h4>
     </div>
   );
 };

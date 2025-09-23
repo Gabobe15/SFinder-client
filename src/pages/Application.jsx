@@ -1,9 +1,28 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useUniversity from "../hooks/useUniversity";
 import { toast } from "react-toastify";
+import {
+  Box,
+  Button,
+  Chip,
+  Container,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  Paper,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { MuiTelInput } from "mui-tel-input";
 
 const MultiStepForm = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const steps = ["Personal Information", "Academic Information"];
   const location = useLocation();
   const {
     course: initialCourse,
@@ -12,6 +31,8 @@ const MultiStepForm = () => {
     course_id: courseId,
   } = location.state || {};
   const { addApplicants } = useUniversity();
+
+  console.log("Location state", location.state);
 
   const [step, setStep] = useState(1);
   const [state, setState] = useState({
@@ -23,23 +44,35 @@ const MultiStepForm = () => {
     county: "",
     phone: "",
     sex: "",
-    passport_photo: "",
+    passport_photo: null,
     // academic info
     course: courseId,
     university: universityId,
     education_level: "",
     qualification: "",
-    recommendation: "",
-    academic_transcript: "",
-    personal_statement: "",
+    recommendation: null,
+    academic_transcript: null,
+    personal_statement: null,
   });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setState({
-      ...state,
-      [name]: files ? files[0] : value,
-    });
+
+    if (files && files[0]) {
+      if (files[0].size > 5 * 1024 * 1024) {
+        toast.error("File size must be less than 5MB");
+        return;
+      }
+      setState({
+        ...state,
+        [name]: files[0],
+      });
+    } else {
+      setState({
+        ...state,
+        [name]: value,
+      });
+    }
   };
 
   const {
@@ -50,218 +83,401 @@ const MultiStepForm = () => {
     county,
     phone,
     sex,
-
-    university,
-    course,
     education_level,
     qualification,
   } = state;
 
-  const nextStep = () => setStep((prev) => prev + 1);
-  const prevStep = () => setStep((prev) => prev - 1);
+  const nextStep = () => {
+    if (step === 1) {
+      if (
+        !state.fullname ||
+        !state.email ||
+        !state.national_id ||
+        !state.county ||
+        !state.phone ||
+        !state.sex ||
+        !state.address ||
+        !state.passport_photo
+      ) {
+        toast.error("Please fill all required fields");
+        return;
+      }
+    }
+    setStep((prev) => prev + 1);
+  };
 
+  const prevStep = () => setStep((prev) => prev - 1);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    const formdata = new FormData();
-    Object.entries(state).forEach(([key, value]) => {
-      if (value) formdata.append(key, value);
-    });
+    try {
+      const formdata = new FormData();
 
-    await addApplicants(formdata);
-    toast.success(
-      "Your application has been receive we will send you email after evaluations!"
-    );
+      // Convert IDs to integers explicitly
+      const intUniversityId = parseInt(universityId);
+      const intCourseId = parseInt(courseId);
 
-    console.log("Submitted Data:", state);
+      console.log("Sending IDs:", { intUniversityId, intCourseId });
+
+      Object.entries(state).forEach(([key, value]) => {
+        if (value) {
+          // For file fields, append directly
+          if (value instanceof File) {
+            formdata.append(key, value);
+          }
+          // For ID fields, ensure they're integers
+          else if (key === "university") {
+            formdata.append(key, intUniversityId);
+          } else if (key === "course") {
+            formdata.append(key, intCourseId);
+          }
+          // For other fields, append as-is
+          else {
+            formdata.append(key, value);
+          }
+        }
+      });
+
+      // Debug what's being sent
+      for (let [key, value] of formdata.entries()) {
+        console.log(key, value);
+      }
+
+      await addApplicants(formdata);
+      toast.success("Your application has been received!");
+      navigate("/");
+    } catch (error) {
+      toast.error("Submission failed. Please try again.");
+      console.error("Submission error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   try {
+  //     const formdata = new FormData();
+  //     Object.entries(state).forEach(([key, value]) => {
+  //       if (value) formdata.append(key, value);
+  //     });
+
+  //     await addApplicants(formdata);
+  //     toast.success(
+  //       "Your application has been received. We will send you an email after evaluation!"
+  //     );
+  //   } catch (error) {
+  //     toast.error("Submission failed. Please try again.");
+  //     console.log(error?.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handlePhoneChange = (newValue) => {
+    setState((prev) => ({
+      ...prev,
+      phone: newValue,
+    }));
   };
 
   return (
-    <div className="form-container">
-      <h2>Step {step} of 2</h2>
-      <form onSubmit={handleSubmit}>
-        {step === 1 && (
-          <div>
-            <h3>Personal Information</h3>
-            <div>
-              <label htmlFor="fullname">Full name:</label>
-              <input
-                type="text"
-                name="fullname"
-                value={fullname}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="email">Email:</label>
-              <input
-                type="email"
-                name="email"
-                value={email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="address">Address:</label>
-              <input
-                type="text"
-                name="address"
-                value={address}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="national_id">National id:</label>
-              <input
-                type="text"
-                name="national_id"
-                value={national_id}
-                onChange={handleChange}
-                placeholder="birth certificate, id "
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="county">County:</label>
-              <input
-                type="text"
-                name="county"
-                value={county}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="phone">Mobile phone:</label>
-              <input
-                type="tel"
-                name="phone"
-                value={phone}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="sex">Sex:</label>
-              <label>
-                <input
-                  type="radio"
-                  name="sex"
-                  value="male"
-                  checked={sex === "male"}
-                  onChange={handleChange}
-                />
-                Male
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="sex"
-                  value="female"
-                  checked={sex === "female"}
-                  onChange={handleChange}
-                />
-                Female
-              </label>
-            </div>
-            <div>
-              <label htmlFor="passport_photo">Passport Photo:</label>
-              <input
-                type="file"
-                name="passport_photo"
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <button type="button" onClick={nextStep}>
-              Next
-            </button>
-          </div>
-        )}
-        {step === 2 && (
-          <div>
-            <h3>Academic Information</h3>
-            <div>
-              <input
-                type="hidden"
-                name="course"
-                value={courseId}
-                disabled
-                onChange={handleChange}
-                required
-              />
-              <p>Course: {initialCourse}</p>
-            </div>
-            <div>
-              <input
-                type="hidden"
-                name="university"
-                value={universityId}
-                disabled
-                onChange={handleChange}
-                required
-              />
-              <p>University:{initialUniversity}</p>
-            </div>
-            <div>
-              <label htmlFor="education_level">Education Level:</label>
-              <input
-                type="text"
-                name="education_level"
-                value={education_level}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="qualification">Qualification:</label>
-              <input
-                type="text"
-                name="qualification"
-                value={qualification}
-                onChange={handleChange}
-                required
-              />
-            </div>
+    <Container maxWidth="md">
+      <Paper elevation={3} sx={{ p: 4, position: "relative" }}>
+        <Typography variant="h4" gutterBottom align="center">
+          University Application
+        </Typography>
+        <Box component={"form"} onSubmit={handleSubmit}>
+          {step === 1 && (
+            <>
+              <Typography variant="h6" gutterBottom>
+                Personal Information
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    name="fullname"
+                    value={fullname}
+                    type="text"
+                    fullWidth
+                    label="Fullname"
+                    variant="outlined"
+                    onChange={handleChange}
+                    required
+                  />
+                </Grid>
 
-            <div>
-              <label htmlFor="academic_transcript">Academic Transcripts:</label>
-              <input
-                type="file"
-                name="academic_transcript"
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="personal_statement">Personal statement:</label>
-              <input
-                type="file"
-                name="personal_statement"
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="recommendation">Recommendation :</label>
-              <input
-                type="file"
-                name="recommendation"
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <button type="button" onClick={prevStep}>
-              Back
-            </button>
-            <button type="submit">Submit</button>
-          </div>
-        )}
-      </form>
-    </div>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    type="email"
+                    name="email"
+                    label="Email"
+                    required
+                    fullWidth
+                    variant="outlined"
+                    value={email}
+                    onChange={handleChange}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    name="national_id"
+                    value={national_id}
+                    type="text"
+                    fullWidth
+                    label="National Id"
+                    variant="outlined"
+                    onChange={handleChange}
+                    required
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    name="county"
+                    value={county}
+                    type="text"
+                    fullWidth
+                    label="County"
+                    variant="outlined"
+                    onChange={handleChange}
+                    required
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <MuiTelInput
+                    value={phone}
+                    onChange={handlePhoneChange}
+                    name="phone"
+                    label="Phone Number"
+                    defaultCountry="KE"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    forceCallingCode
+                    preferredCountries={["KE", "SO", "ET", "UG"]}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    type="file"
+                    name="passport_photo"
+                    label="Passport Photo"
+                    fullWidth
+                    required
+                    variant="outlined"
+                    onChange={handleChange}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    inputProps={{
+                      accept: "image/*",
+                    }}
+                    helperText="Upload a recent passport-sized photo (JPG, PNG, max 5MB)"
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <FormControl component="fieldset" fullWidth>
+                    <FormLabel component="legend">Sex:</FormLabel>
+                    <RadioGroup
+                      aria-label="sex"
+                      name="sex"
+                      value={sex}
+                      onChange={handleChange}
+                      row
+                      sx={{ mt: 1 }}
+                    >
+                      <FormControlLabel
+                        value="male"
+                        control={<Radio />}
+                        label="Male"
+                      />
+                      <FormControlLabel
+                        value="female"
+                        control={<Radio />}
+                        label="Female"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    name="address"
+                    label="Address"
+                    multiline
+                    rows={3}
+                    required
+                    fullWidth
+                    variant="outlined"
+                    value={address}
+                    onChange={handleChange}
+                  />
+                </Grid>
+              </Grid>
+            </>
+          )}
+
+          {step === 2 && (
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="h6" gutterBottom>
+                  Academic Information
+                </Typography>
+                <Typography variant="body2" color="textSecondary" gutterBottom>
+                  Course: {initialCourse} | University: {initialUniversity}
+                </Typography>
+              </Grid>
+
+              <div>
+                <input
+                  type="hidden"
+                  name="course"
+                  value={courseId}
+                  disabled
+                  onChange={handleChange}
+                  required
+                />
+                <p>Course: {initialCourse}</p>
+              </div>
+              <div>
+                <input
+                  type="hidden"
+                  name="university"
+                  value={universityId}
+                  disabled
+                  onChange={handleChange}
+                  required
+                />
+                <p>University:{initialUniversity}</p>
+              </div>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  type="text"
+                  name="education_level"
+                  value={education_level}
+                  variant="outlined"
+                  fullWidth
+                  label="Education Level"
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  type="text"
+                  name="qualification"
+                  value={qualification}
+                  onChange={handleChange}
+                  fullWidth
+                  label="Qualification"
+                  required
+                  variant="outlined"
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  type="file"
+                  name="academic_transcript"
+                  label="Academic Transcript"
+                  fullWidth
+                  variant="outlined"
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ accept: ".pdf" }}
+                  required
+                  helperText="Upload a PDF file (max 5MB)"
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  type="file"
+                  name="personal_statement"
+                  label="Personal Statement"
+                  fullWidth
+                  variant="outlined"
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ accept: ".pdf" }}
+                  required
+                  helperText="Upload a PDF file (max 5MB)"
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  type="file"
+                  name="recommendation"
+                  label="Recommendation"
+                  fullWidth
+                  variant="outlined"
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ accept: ".pdf" }}
+                  required
+                  helperText="Upload a PDF file (max 5MB)"
+                />
+              </Grid>
+            </Grid>
+          )}
+
+          <Box
+            sx={{
+              mt: 4,
+              pt: 2,
+              borderTop: "1px solid",
+              borderColor: "divider",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 2,
+            }}
+          >
+            <Chip
+              label={`Step ${step} of ${steps.length}`}
+              color="primary"
+              variant="outlined"
+            />
+            <Box sx={{ display: "flex", gap: 1 }}>
+              {step > 1 && (
+                <Button
+                  variant="outlined"
+                  onClick={prevStep}
+                  disabled={loading}
+                >
+                  Back
+                </Button>
+              )}
+              {step < steps.length ? (
+                <Button
+                  variant="contained"
+                  onClick={nextStep}
+                  disabled={loading}
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button variant="contained" type="submit" disabled={loading}>
+                  {loading ? "Submitting" : "Submit Application"}
+                </Button>
+              )}
+            </Box>
+          </Box>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 

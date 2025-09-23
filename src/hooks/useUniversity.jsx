@@ -43,7 +43,7 @@ const useUniversity = () => {
   const getApplicants = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/admissions/applications",
+        "http://127.0.0.1:8000/api/admissions/applications/",
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -58,7 +58,7 @@ const useUniversity = () => {
   const addApplicants = async (data) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/admissions/applications",
+        "http://127.0.0.1:8000/api/admissions/applications/",
         data,
         {
           headers: {
@@ -91,7 +91,7 @@ const useUniversity = () => {
 
   const updateApplicationStatus = async (id, status, refresh) => {
     try {
-      await axios.patch(
+      const response = await axios.patch(
         `http://127.0.0.1:8000/api/admissions/applications/${id}/status/`,
         { status },
         {
@@ -101,7 +101,10 @@ const useUniversity = () => {
         }
       );
       toast.success(`Application ${status}`);
-      if (refresh) refresh();
+      if (refresh) {
+        await refresh();
+      }
+      return response.data;
     } catch (error) {
       toast.error("Something went wrong");
       console.log(error?.message);

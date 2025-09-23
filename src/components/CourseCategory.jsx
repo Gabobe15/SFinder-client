@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
 import useCategory from "../hooks/useCategory";
-
+import {
+  Button,
+  Container,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 const CourseCategory = () => {
   const { getCategory } = useCategory();
   const [category, setCategory] = useState([]);
@@ -21,46 +33,73 @@ const CourseCategory = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Users</h1>
-      <table border="1" width={"80%"}>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>General Requirement</th>
-            <th>Requirements</th>
-            {/* <th>Action</th> */}
-          </tr>
-        </thead>
-        <tbody>
-          {category.length > 0 ? (
-            category.map(
-              ({ id, name, general_requirements, requirement_file }) => (
-                <tr key={id}>
-                  <td>{name}</td>
-                  <td>
-                    {general_requirements.split(",")[0]}
-                    <br />
-                    {general_requirements.split(",")[1]}
-                  </td>
-                  {/* <td>{`${general_requirements.split(',')[0]}<br/> ${general_requirements.split(',')[1]}`}</td> */}
-                  <td>
-                    {" "}
-                    <a href={requirement_file} download>
-                      Download file
-                    </a>
-                  </td>
-                </tr>
+    <Container spacing={3} maxWidth="lg">
+      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+        Categories
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-lable="list category">
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <strong>Name</strong>
+              </TableCell>
+              <TableCell>
+                <strong>General Requirement</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Requirements</strong>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {category.length > 0 ? (
+              category.map(
+                ({ id, name, general_requirements, requirement_file }) => (
+                  <TableRow key={id}>
+                    <TableCell>{name}</TableCell>
+                    <TableCell>
+                      {general_requirements.split(",")[0]}
+                      <br />
+                      {general_requirements.split(",")[1]}
+                    </TableCell>
+
+                    <TableCell>
+                      <Button
+                        component="a"
+                        target="_blank"
+                        href={requirement_file}
+                        download
+                        variant="outlined"
+                        size="small"
+                        startIcon={<CloudDownloadIcon />}
+                        sx={{ textDecoration: "none" }}
+                      >
+                        Download
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                )
               )
-            )
-          ) : (
-            <tr>
-              <td colSpan="5">No category found</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+            ) : (
+              <TableRow>
+                <TableCell
+                  align="center"
+                  sx={{
+                    py: 3,
+                  }}
+                  colSpan="4"
+                >
+                  <Typography variant="body1" color="textSecondary">
+                    No category found
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
   );
 };
 

@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useUniversity from "../../hooks/useUniversity";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Chip,
+  Container,
+  Grid,
+  Typography,
+} from "@mui/material";
 
 const Applicants = () => {
   const { getApplicants } = useUniversity();
@@ -12,7 +23,7 @@ const Applicants = () => {
       const data = await getApplicants();
       setState(data);
     } catch (error) {
-      console.log(error?.messsage);
+      console.log(error?.message);
     }
   };
 
@@ -21,60 +32,77 @@ const Applicants = () => {
   }, []);
 
   console.log(state);
+
   return (
-    <div>
-      <h1>Applicants</h1>
-      <table border="1" width={"100%"}>
-        <thead>
-          <tr>
-            <th>Full name</th>
-            <th>Course</th>
-            <th>Qualifications</th>
-            <th>Personal statement</th>
-            <th>Full info</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {state.length > 0 ? (
-            state.map(
-              ({
-                id,
-                fullname,
-                course_name,
-                qualification,
-                personal_statement,
-                status,
-              }) => (
-                <tr key={id}>
-                  <td>{fullname}</td>
-                  <td>{course_name}</td>
-                  <td>{qualification}</td>
-                  <td>
-                    {" "}
-                    <a href={personal_statement} download>
-                      View PDF
-                    </a>{" "}
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => navigate(`/student/applications/${id}`)}
-                    >
-                      View
-                    </button>
-                  </td>
-                  <td>{status}</td>
-                </tr>
-              )
-            )
-          ) : (
-            <tr>
-              <td colSpan="5">No Applicants found</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+    <Container sx={{ mt: 5 }} maxWidth="md" spacing={3}>
+      <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
+        Applicantions
+      </Typography>
+      <Grid container spacing={3}>
+        {state && state.length > 0 ? (
+          state.map(({ id, fullname, course_name, status }) => (
+            <Grid size={{ xs: 12 }} key={id}>
+              {" "}
+              <Card>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  <Box>
+                    <Typography variant="h6">
+                      {fullname || "No name"}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {course_name || "N/A"}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    sx={{ mt: 1, display: "flex", alignItems: "center" }}
+                  >
+                    <Chip
+                      label={(status == "pending" && "Submited") || "Submited"}
+                      color={
+                        status === "approved"
+                          ? "success"
+                          : status === "rejected"
+                          ? "error"
+                          : "warning"
+                      }
+                      size="small"
+                      sx={{ ml: 1, p: 1 }}
+                    />
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    onClick={() => navigate(`/student/applications/${id}`)}
+                  >
+                    View Details
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))
+        ) : (
+          <Grid size={{ xs: 12 }}>
+            <Card sx={{ p: 3, textAlign: "center" }}>
+              <Typography variant="h6" color="textSecondary">
+                No applications found
+              </Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                You haven't submitted any applications yet.
+              </Typography>
+            </Card>
+          </Grid>
+        )}
+      </Grid>
+    </Container>
   );
 };
 

@@ -1,26 +1,34 @@
+import { Container, Box, Typography, Button } from "@mui/material";
 import { NavLink, Outlet } from "react-router-dom";
 const Admin = () => {
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "5px 10px",
-        }}
-      >
-        <h3>AdminPage</h3>
-        <div
-          style={{ display: "flex", columnGap: "10px", textDecoration: "none" }}
+    <Container spacing={3} sx={{ mt: 2 }} maxWidth="lg">
+      <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1, gap: 1 }}>
+        <Button component={NavLink} to="" variant="text" size="small">
+          Users
+        </Button>
+        <Button component={NavLink} to="signup" variant="text" size="small">
+          Add Account
+        </Button>
+        <Button
+          component={NavLink}
+          to="add-category"
+          variant="text"
+          size="small"
         >
-          <NavLink to="">List User</NavLink>
-          <NavLink to="signup">Add User</NavLink>
-          <NavLink to="add-category">Add Course Category</NavLink>
-          <NavLink to="list-category">List Category</NavLink>
-        </div>
-      </div>
-      <div>{<Outlet />}</div>
-    </div>
+          Add Category
+        </Button>
+        <Button
+          component={NavLink}
+          to="list-category"
+          variant="text"
+          size="small"
+        >
+          Categories
+        </Button>
+      </Box>
+      <Box>{<Outlet />}</Box>
+    </Container>
   );
 };
 

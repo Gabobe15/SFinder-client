@@ -1,17 +1,50 @@
+import { Box, Container, Button, Typography } from "@mui/material";
 import { NavLink, Outlet } from "react-router-dom";
 
 const University = () => {
- 
+  // const location = useLocation();
+
+  const navItems = [
+    { to: "", label: "View Applications" },
+    { to: "add-course", label: "Create Course" },
+    { to: "university-course", label: "Add University Program" },
+  ];
+
   return (
-    <div>
-      <h1>University</h1>
-      <div style={{ display: "flex", columnGap: 2 }}>
-        <NavLink to="applicants">Applicants</NavLink>
-        <NavLink to="">Add Course</NavLink>
-        <NavLink to="university-course">Add University Course</NavLink>
-      </div>
-      {<Outlet />}
-    </div>
+    <Container maxWidth="lg" sx={{ py: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1,
+          justifyContent: "flex-end",
+          mt: 2,
+          mb: { xs: 2, md: 4 },
+        }}
+      >
+        {navItems.map(({ to, label }) => {
+          // const isActive = location.pathname.endsWith(to);
+
+          return (
+            <Button
+              key={to}
+              component={NavLink}
+              to={to}
+              end
+              // variant={isActive ? "contained" : "outlined"}
+              sx={{
+                textDecoration: "none",
+                textTransform: "none",
+                // fontWeight: isActive ? 600 : 400,
+              }}
+            >
+              {label}
+            </Button>
+          );
+        })}
+      </Box>
+
+      <Outlet />
+    </Container>
   );
 };
 

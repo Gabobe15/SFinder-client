@@ -1,8 +1,36 @@
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
+import { NavLink } from "react-router-dom";
 import useCategory from "../../hooks/useCategory";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+  Container,
+  Grid,
+  Paper,
+  FormControl,
+  FormLabel,
+  MenuItem,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  InputLabel,
+  Select,
+} from "@mui/material";
+import { useSelector } from "react-redux";
+import { MuiTelInput } from "mui-tel-input";
 
 const AdminRegiter = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const { error } = useSelector((state) => state.auth);
+
   const { getCategory } = useCategory();
   const { registerAuth } = useAuth();
 
@@ -14,6 +42,7 @@ const AdminRegiter = () => {
     sex: "",
     mobile: "",
     role: "",
+    address: "",
     password: "",
     confirmPassword: "",
     category_id: "",
@@ -25,6 +54,7 @@ const AdminRegiter = () => {
     mobile,
     email,
     role,
+    address,
     password,
     confirmPassword,
     category_id,
@@ -57,7 +87,16 @@ const AdminRegiter = () => {
     }
     console.log(state);
 
-    registerAuth({ fullname, email, mobile, sex, role, password, category_id });
+    registerAuth({
+      fullname,
+      email,
+      mobile,
+      sex,
+      role,
+      address,
+      password,
+      category_id,
+    });
 
     setState({
       fullname: "",
@@ -65,7 +104,9 @@ const AdminRegiter = () => {
       sex: "",
       mobile: "",
       role: "",
+      address: "",
       password: "",
+      confirmPassword:"",
       field_study: "",
     });
   };
@@ -74,143 +115,286 @@ const AdminRegiter = () => {
     fetchCategory();
   }, []);
 
+  const handlePhoneChange = (newValue) => {
+    setState((prev) => ({
+      ...prev,
+      mobile: newValue,
+    }));
+  };
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="fullname">
-            Fullname:
-            <input
-              type="text"
-              name="fullname"
-              value={fullname}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="email">
-            Email:
-            <input
-              type="email"
-              name="email"
-              value={email}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="mobile">
-            Mobile:
-            <input
-              type="text"
-              name="mobile"
-              value={mobile}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="role-select">
-            Role:
-            <select
-              name="role"
-              id="role-select"
-              value={role}
-              onChange={handleChange}
-              style={{ border: "none" }}
-            >
-              <option value="" disabled defaultChecked>
-                Select a role
-              </option>
-              <option value="admin">Admin</option>
-              <option value="university">University</option>
-              <option value="student">Student</option>
-            </select>
-          </label>
-        </div>
-        <div>
-          <label htmlFor="category_id">
-            Field of Study:
-            <select
-              name="category_id"
-              id="category_id"
-              value={category_id}
-              onChange={handleChange}
-              style={{ border: "none" }}
-            >
-              <option value="" disabled defaultChecked>
-                Select a a field
-              </option>
-              {category.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <div>
-          <label htmlFor="sex">
-            Sex:
-            <label htmlFor="male">
-              <input
-                type="radio"
-                id="male"
-                name="sex"
-                value="Male"
-                checked={sex === "Male"}
+    <Container
+      maxWidth="sm"
+      sx={{
+        minHeight: "50vh",
+        display: "flex",
+        alignContent: "center",
+        flexDirection: "column",
+        // border: "1px solid red",
+        py: 4,
+      }}
+    >
+      <Paper
+        elevation={10}
+        sx={{
+          p: 4,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{ fontWeight: "bold", mb: 3 }}
+        >
+          Add Account
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Grid container justifyContent="center" spacing={2}>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                id="fullname"
+                type="text"
+                name="fullname"
+                label="Full name"
+                fullWidth
+                variant="outlined"
+                value={fullname}
                 onChange={handleChange}
               />
-              Male
-            </label>
-            <label htmlFor="female">
-              <input
-                type="radio"
-                id="female"
-                name="sex"
-                value="Female"
-                checked={sex === "Female"}
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                id="email"
+                type="email"
+                name="email"
+                label="Email"
+                fullWidth
+                variant="outlined"
+                value={email}
                 onChange={handleChange}
               />
-              Female
-            </label>
-            <label htmlFor="other">
-              <input
-                type="radio"
-                id="none"
-                name="sex"
-                value="None"
-                checked={sex === "None"}
-                onChange={handleChange}
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <MuiTelInput
+                value={mobile}
+                onChange={handlePhoneChange}
+                name="mobile"
+                label="Phone Number"
+                defaultCountry="KE"
+                variant="outlined"
+                fullWidth
+                forceCallingCode
+                preferredCountries={["KE", "SO", "ET", "UG"]}
               />
-              None
-            </label>
-          </label>
-        </div>
-        <div>
-          <label htmlFor="password">
-            Password:
-            <input
-              type="password"
-              name="password"
-              value={password}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="confirmPassword">
-            Confirm Password:
-            <input
-              type="password"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <button type="submit">Register</button>
-      </form>
-    </div>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <FormControl fullWidth variant="outlined" size="small">
+                <InputLabel id="role-select-label">Role</InputLabel>
+                <Select
+                  labelId="role-select-label"
+                  id="role-select"
+                  name="role"
+                  value={role}
+                  onChange={handleChange}
+                  label="Role"
+                >
+                  <MenuItem value="" disabled>
+                    <em>Select a role</em>
+                  </MenuItem>
+                  <MenuItem value="admin">Admin</MenuItem>
+                  <MenuItem value="university">University</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <FormControl fullWidth variant="outlined" size="small">
+                <InputLabel id="category-select-label">
+                  Field of Study
+                </InputLabel>
+                <Select
+                  labelId="category-select-label"
+                  id="category_id"
+                  name="category_id"
+                  value={category_id}
+                  onChange={handleChange}
+                  label="Field of Study"
+                >
+                  <MenuItem value="" disabled>
+                    Select a field
+                  </MenuItem>
+                  {category.map((cat) => (
+                    <MenuItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <FormControl component="fieldset">
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <FormLabel component="legend" sx={{ mb: 0, marginRight: 1 }}>
+                    Sex:
+                  </FormLabel>
+                  <RadioGroup
+                    aria-label="sex"
+                    name="sex"
+                    value={sex}
+                    onChange={handleChange}
+                    row
+                    sx={{ display: "flex", gap: 2 }}
+                  >
+                    <FormControlLabel
+                      value="Male"
+                      control={<Radio />}
+                      label="Male"
+                      id="male"
+                    />
+                    <FormControlLabel
+                      value="Female"
+                      control={<Radio />}
+                      label="Female"
+                      id="female"
+                    />
+                    <FormControlLabel
+                      value="institution"
+                      control={<Radio />}
+                      label="Educational Institution"
+                      id="institution"
+                    />
+                  </RadioGroup>
+                </Box>
+              </FormControl>
+            </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Address"
+                name="address"
+                value={address}
+                onChange={handleChange}
+                multiline
+                fullWidth
+                rows={3}
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                id="password"
+                name="password"
+                label="Password"
+                variant="outlined"
+                fullWidth
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={handleChange}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={
+                            showPassword ? "hide password" : "show password"
+                          }
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                id="cpassword"
+                name="confirmPassword"
+                label="Confirm Password"
+                variant="outlined"
+                fullWidth
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={handleChange}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={
+                            showPassword ? "hide password" : "show password"
+                          }
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Button
+                variant="contained"
+                sx={{ bgcolor: "#008000" }}
+                type="submit"
+                fullWidth
+                size="large"
+              >
+                Register
+              </Button>
+              {error && (
+                <Typography
+                  variant="body2"
+                  color="error"
+                  sx={{ mt: 2, textAlign: "center" }}
+                >
+                  {error}
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              mt: 2,
+              gap: 1,
+            }}
+          >
+            <Typography variant="body2">
+              Already have account? {""}
+              <NavLink to={"/login"} style={{ textDecoration: "none" }}>
+                <Typography variant="body2" color="#1976d2" component="span">
+                  Login
+                </Typography>
+              </NavLink>
+            </Typography>
+          </Box>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 

@@ -5,6 +5,8 @@ export { default as ChangePassword } from "./auth/changePassword";
 export { default as ForgetPassword } from "./auth/forgetPassword";
 export { default as ResetPassword } from "./auth/resetPassword";
 export { default as AdminRegister } from "./auth/AdminRegister";
+export { default as Account } from "./auth/Account";
+export { default as Profile } from "./auth/Profile";
 
 // other pages
 export { default as Homepage } from "./homepage";
@@ -22,3 +24,6 @@ export { default as Applicant } from "./university/Applicant";
 
 export { default as SApplicants } from "./student/Applicants";
 export { default as SApplicant } from "./student/Applicant";
+
+export { default as AppBar } from "./AppBar";
+export { default as AppProfile } from "./AppProfile";

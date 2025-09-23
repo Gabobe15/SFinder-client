@@ -1,23 +1,46 @@
 import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
+import { NavLink, useNavigate } from "react-router-dom";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-// email = models.EmailField(max_length=200, unique=True)
-// fullname = models.CharField(max_length=200)
-// role = models.CharField(max_length=20, default='student', choices=ROLE_CHOICE)
-// mobile = models.CharField(max_length=200, blank=True, null=True)
-// sex = models.CharField(max_length=10, blank=True, null=True)
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+  Container,
+  Grid,
+  Paper,
+  FormControl,
+  FormLabel,
+  MenuItem,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+} from "@mui/material";
+import { useSelector } from "react-redux";
+import { MuiTelInput } from "mui-tel-input";
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
+  const { error } = useSelector((state) => state.auth);
+  const [showPassword, setShowPassword] = useState(false);
+  const nagivate = useNavigate();
   const [state, setState] = useState({
     fullname: "",
     email: "",
     sex: "",
     mobile: "",
+    address: "",
     password: "",
     confirmPassword: "",
   });
 
-  const { fullname, sex, mobile, email, password, confirmPassword } = state;
+  const { fullname, sex, mobile, email, address, password, confirmPassword } =
+    state;
 
   const { registerAuth } = useAuth();
 
@@ -29,6 +52,13 @@ const RegisterPage = () => {
     }));
   };
 
+  const handlePhoneChange = (newValue) => {
+    setState((prev) => ({
+      ...prev,
+      mobile: newValue,
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password != confirmPassword) {
@@ -37,102 +67,240 @@ const RegisterPage = () => {
     }
     console.log(state);
 
-    registerAuth({ fullname, email, mobile, sex, password });
-
-    // setState({
-    //   email: "",
-    //   password: "",
-    // });
+    try {
+      registerAuth({ fullname, email, mobile, sex, address, password });
+      toast.success("User registered suggessfully!");
+      setTimeout(() => {
+        nagivate("/login");
+      }, 5000);
+    } catch (error) {
+      toast.error("Something went wrong", error);
+    }
   };
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="fullname">
-            Fullname:
-            <input
-              type="text"
-              name="fullname"
-              value={fullname}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="email">
-            Email:
-            <input
-              type="email"
-              name="email"
-              value={email}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="mobile">
-            Mobile:
-            <input
-              type="text"
-              name="mobile"
-              value={mobile}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="sex">
-            Sex:
-            <label htmlFor="male">
-              <input
-                type="radio"
-                id="male"
-                name="sex"
-                value="Male"
-                checked={sex === "Male"}
+    <Container
+      maxWidth="sm"
+      sx={{
+        minHeight: "50vh",
+        display: "flex",
+        alignContent: "center",
+        flexDirection: "column",
+        // border: "1px solid red",
+        py: 4,
+      }}
+    >
+      <Paper
+        elevation={10}
+        sx={{
+          p: 4,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{ fontWeight: "bold", mb: 3 }}
+        >
+          Regsiter
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Grid container justifyContent="center" spacing={2}>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                id="fullname"
+                type="text"
+                name="fullname"
+                label="Full name"
+                fullWidth
+                variant="outlined"
+                value={fullname}
                 onChange={handleChange}
               />
-              Male
-            </label>
-            <label htmlFor="female">
-              <input
-                type="radio"
-                id="female"
-                name="sex"
-                value="Female"
-                checked={sex === "Female"}
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                id="email"
+                type="email"
+                name="email"
+                label="Email"
+                fullWidth
+                variant="outlined"
+                value={email}
                 onChange={handleChange}
               />
-              Female
-            </label>
-          </label>
-        </div>
-        <div>
-          <label htmlFor="password">
-            Password:
-            <input
-              type="password"
-              name="password"
-              value={password}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="confirmPassword">
-            Confirm Password:
-            <input
-              type="password"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <button type="submit">Register</button>
-      </form>
-      Already have account<NavLink to={"login"}>Login</NavLink>
-    </div>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <MuiTelInput
+                value={mobile}
+                onChange={handlePhoneChange}
+                name="mobile"
+                label="Phone Number"
+                defaultCountry="KE"
+                variant="outlined"
+                fullWidth
+                forceCallingCode
+                preferredCountries={["KE", "SO", "ET", "UG"]}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <FormControl component="fieldset">
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <FormLabel component="legend" sx={{ mb: 0, marginRight: 1 }}>
+                    Sex:
+                  </FormLabel>
+                  <RadioGroup
+                    aria-label="sex"
+                    name="sex"
+                    value={sex}
+                    onChange={handleChange}
+                    row
+                    sx={{ display: "flex", gap: 2 }}
+                  >
+                    <FormControlLabel
+                      value="Male"
+                      control={<Radio />}
+                      label="Male"
+                      id="male"
+                    />
+                    <FormControlLabel
+                      value="Female"
+                      control={<Radio />}
+                      label="Female"
+                      id="female"
+                    />
+                  </RadioGroup>
+                </Box>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Address"
+                name="address"
+                value={address}
+                onChange={handleChange}
+                multiline
+                fullWidth
+                rows={3}
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                id="password"
+                name="password"
+                label="Password"
+                variant="outlined"
+                fullWidth
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={handleChange}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={
+                            showPassword ? "hide password" : "show password"
+                          }
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                id="cpassword"
+                name="confirmPassword"
+                label="Confirm Password"
+                variant="outlined"
+                fullWidth
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={handleChange}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={
+                            showPassword ? "hide password" : "show password"
+                          }
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Button
+                variant="contained"
+                sx={{ bgcolor: "#008000" }}
+                type="submit"
+                fullWidth
+                size="large"
+              >
+                Register
+              </Button>
+              {error && (
+                <Typography
+                  variant="body2"
+                  color="error"
+                  sx={{ mt: 2, textAlign: "center" }}
+                >
+                  {error}
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              mt: 2,
+              gap: 1,
+            }}
+          >
+            <Typography variant="body2">
+              Already have account? {""}
+              <NavLink to={"/login"} style={{ textDecoration: "none" }}>
+                <Typography variant="body2" color="#1976d2" component="span">
+                  Login
+                </Typography>
+              </NavLink>
+            </Typography>
+          </Box>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 

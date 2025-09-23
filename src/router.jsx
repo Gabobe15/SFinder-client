@@ -1,91 +1,128 @@
-import { createBrowserRouter } from 'react-router-dom';
-import App from './App.jsx';
+import { createBrowserRouter } from "react-router-dom";
+import AuthLayout from "./AuthLayout";
+import {
+  About,
+  Admin,
+  AdminRegister,
+  Applicant,
+  Applicants,
+  MultiStepForm as StudentApplication,
+  ChangePassword,
+  Contact,
+  ForgetPassword,
+  Homepage,
+  Login,
+  NotFoundPage,
+  Register,
+  ResetPassword,
+  Student,
+  University,
+  SApplicants,
+  SApplicant,
+  Account,
+  AppBar,
+  AppProfile,
+  Profile,
+} from "./pages";
 
-import { ETracker, ModalPage, Recipe, Todo } from './pages';
-// import { Ingredient, Instructions, RecipePage } from './components';
-import NotFoundPage from './components/NotFoundPage.jsx';
+import {
+  AddCategory,
+  AddCourse,
+  AddUniversityCourse,
+  CourseCategory,
+  ListUser,
+} from "./components";
+import PrivateRouter from "./utils/PrivateRouter";
+import Unauthorized from "./pages/Unauthorized";
+import App from "./App";
 
 export const router = createBrowserRouter([
-	{
-		path: '/',
-		element: <App />,
-		errorElement: <NotFoundPage />,
-		children: [
-			// { index: true, element: <ETracker /> },
+  // auth router
+  {
+    element: <AuthLayout />,
+    children: [
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
+      { path: "forget-password", element: <ForgetPassword /> },
+      { path: "password-reset/:uid/:token", element: <ResetPassword /> },
+    ],
+  },
 
-			// { index: true, element: <Recipe /> },
-			// slug
-			// { path: 'recipe/:slug', element: <RecipePage /> },
-			// id
-			// {
-			// 	path: 'recipe/:id',
-			// 	element: <RecipePage />,
-			// 	children: [
-			// 		{
-			// 			path: 'instructions',
-			// 			element: <Instructions />,
-			// 		},
-			// 		{
-			// 			path: 'ingredient',
-			// 			element: <Ingredient />,
-			// 		},
-			// 	],
-			// },
+  // 🌍 main app layout with headers/footer
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <NotFoundPage />,
+    children: [
+      // public pages
+      { path: "unauthorized", element: <Unauthorized /> },
 
-			{ index: true, element: <ModalPage /> },
-			{ path: 'todo', element: <Todo /> },
-			// { path: '*', element: <NotFoundPage /> },
-		],
-	},
+      // 🔒 authenticated pages (wrapped in PrivateRouter)
+      {
+        element: (
+          <PrivateRouter allowedRoles={["admin", "university", "student"]} />
+        ),
+        children: [
+          { index: true, element: <Homepage /> },
+          { path: "about", element: <About /> },
+          { path: "contact", element: <Contact /> },
+          { path: "applications", element: <StudentApplication /> },
+          { path: "change-password", element: <ChangePassword /> },
+          { path: "account", element: <Account /> },
+          { path: "appbar", element: <AppBar /> },
+          { path: "profile", element: <Profile /> },
+        ],
+      },
+
+      // 🔐 admin
+      {
+        element: <PrivateRouter allowedRoles={["admin"]} />,
+        children: [
+          {
+            path: "admin",
+            element: <Admin />,
+            children: [
+              { index: true, element: <ListUser /> },
+              { path: "signup", element: <AdminRegister /> },
+              { path: "add-category", element: <AddCategory /> },
+              { path: "list-category", element: <CourseCategory /> },
+            ],
+          },
+        ],
+      },
+
+      // 🏫 university
+      {
+        element: <PrivateRouter allowedRoles={["admin", "university"]} />,
+        children: [
+          {
+            path: "university",
+            element: <University />,
+            children: [
+              { index: true, element: <Applicants /> },
+              { path: "add-course", element: <AddCourse /> },
+              { path: "applications/:id", element: <Applicant /> },
+              { path: "university-course", element: <AddUniversityCourse /> },
+            ],
+          },
+        ],
+      },
+
+      // 🎓 student
+      {
+        element: <PrivateRouter allowedRoles={["student"]} />,
+        children: [
+          {
+            path: "student",
+            element: <Student />,
+            children: [
+              { index: true, element: <SApplicants /> },
+              { path: "applications/:id", element: <SApplicant /> },
+            ],
+          },
+        ],
+      },
+      { path: "*", element: <NotFoundPage /> },
+    ],
+  },
 ]);
-
-// both error element and path * works the same
-
-/*
-export const router = createBrowserRouter(
-	createRoutesFromElements(
-		<Route path="/" element={<App />}>
-			<Route path="/" element={<Recipe />} />
-			<Route path="/recipe/:id" element={<RecipePage />} />
-			<Route path="/todo" element={<Todo />} />
-			<Route path="/expense-tracker" element={<ETracker />} />
-		</Route>
-	)
-);
-*/
-
-/*
-export const router = createBrowserRouter([
-	{
-		path: '/',
-		element: <App />,
-		children: [
-	// ✅ Public routes (no authentication required)
-		{path:'login' , element: <Login/>},
-			{path:'signup' , element: <Signup/>},
-			{path:'unauthorized' , element: <Unauthorized/>},
-		
-	// 🔒 Protected routes: accessible by authenticated users (admin or user)
-		
-			{
-				element: <ProtectedRout allowedRoles={['admin', 'user']} />,
-				children: [
-					{ index: true, element: <Recipe /> },
-					{ path: 'recipe/:id', element: <RecipePage /> },
-				],
-			},
-	// 🔐 Admin-only protected routes
-		
-			{
-				element: <ProtectedRoute allowedRoles={['admin']} />,
-				children: [
-					{ path: 'todo', element: <Todo /> },
-					{ path: 'expense-tracker', element: <ETracker /> },
-				],
-			},
-		
-		],
-	},
-]);
-
-*/
