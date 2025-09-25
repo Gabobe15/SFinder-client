@@ -21,7 +21,7 @@ const settings = [
     link: "/profile",
   },
   {
-    name: "Account",
+    name: "Setting",
     link: "/account",
   },
   {
@@ -95,7 +95,8 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            Scholarship finder
+            eduFinder
+            {/* desktop version */}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -157,7 +158,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            Scholarship finder
+            eduFinder
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map(({ name, link }, index) => (
@@ -221,9 +222,9 @@ function ResponsiveAppBar() {
                           textAlign: "center",
                           textTransform: "none",
                           justifyContent: "center",
-                          '&:hover':{
-                            background:'transparent'
-                          }
+                          "&:hover": {
+                            background: "transparent",
+                          },
                         }}
                       >
                         {name}

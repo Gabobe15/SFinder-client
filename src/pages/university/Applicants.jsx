@@ -15,6 +15,7 @@ import {
   Button,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { GridToolbar } from "@mui/x-data-grid/internals";
 
 const Applicants = () => {
   const [paginationModel, setPaginationModel] = useState({
@@ -88,6 +89,12 @@ const Applicants = () => {
       flex: 1,
     },
     {
+      field: "education_level",
+      headerName: "Education Level",
+      width: 150,
+      flex: 1,
+    },
+    {
       field: "personal_statement",
       headerName: "Statement of Purpose",
       width: 130,
@@ -123,7 +130,7 @@ const Applicants = () => {
       headerName: "Review",
       width: 120,
       renderCell: (params) => (
-        <Box sx={{ display: "flex", gap: 1 , mt:0.5}}>
+        <Box sx={{ display: "flex", gap: 1, mt: 0.5 }}>
           <IconButton
             onClick={() =>
               handleStatusUpdate(Number(params.row.id), "accepted")
@@ -170,6 +177,7 @@ const Applicants = () => {
     fullname: item.fullname,
     course_name: item.course_name,
     qualification: item.qualification,
+    education_level: item.education_level,
     personal_statement: item.personal_statement,
     status: item.status,
   }));
@@ -208,20 +216,19 @@ const Applicants = () => {
           </Typography>
         </Paper>
       ) : (
-        <Paper sx={{ height: "100%", width: "100%", p: 2 }}>
+        <Paper sx={{ height: "100%", width: "100%"}}>
           <DataGrid
             rows={rows}
             columns={columns}
             paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
-            pageSizeOptions={[25, 50, 100]}
-            checkboxSelection={false}
-            disableRowSelectionOnClick
-            loading={loading}
-            sx={{
-              border: 0,
-              "& .MuiDataGrid-cell:hover": {
-                backgroundColor: "action.hover",
+            pageSizeOptions={[5, 10, 25, 50]}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: paginationModel.pageSize,
+                  page: paginationModel.page,
+                },
               },
             }}
           />

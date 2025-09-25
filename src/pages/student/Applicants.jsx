@@ -34,7 +34,7 @@ const Applicants = () => {
   console.log(state);
 
   return (
-    <Container sx={{ mt: 5 }} maxWidth="md" spacing={3}>
+    <Container sx={{ my: 5 }} maxWidth="md" spacing={3}>
       <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
         Applicantions
       </Typography>

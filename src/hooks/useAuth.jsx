@@ -148,17 +148,40 @@ const useAuth = () => {
   };
   const UserList = async () => {
     try {
-      const response = await axios.get(
-        "http://127.0.0.1:8000/api/auth/user",
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
+      const response = await axios.get("http://127.0.0.1:8000/api/auth/user/", {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       return response.data;
     } catch (error) {
       console.log(error?.messsage);
+    }
+  };
+
+  const updateUserProfile = async (userData) => {
+    dispatch(setLoading(true));
+    try {
+      const response = await axios.patch(
+        "http://127.0.0.1:8000/api/auth/user/",
+        userData,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast.success("Profile updated successfully!");
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Updated failed";
+      dispatch(setError(errorMessage));
+      toast.error(errorMessage);
+      throw error;
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -195,6 +218,7 @@ const useAuth = () => {
     UsersList,
     UserList,
     toggleUsersStatus,
+    updateUserProfile,
   };
 };
 

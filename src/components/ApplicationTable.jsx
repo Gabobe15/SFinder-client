@@ -177,10 +177,7 @@ export default function DataTable() {
   }
 
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
-      <Typography variant="h4" component="h1" gutterBottom >
-        University Courses
-      </Typography>
+    <Box sx={{ height: 400, width: "100%", mt: 2 }}>
       {rows.length === 0 && !loading ? (
         <Box
           display="flex"

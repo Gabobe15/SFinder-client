@@ -6,6 +6,7 @@ import {
   Button,
   Container,
   Grid,
+  Paper,
   TextField,
   Typography,
 } from "@mui/material";
@@ -51,60 +52,86 @@ const AddCategory = () => {
     console.log(state);
 
     addCategory(formdata);
-
-    // setState({
-    //   email: "",
-    //   password: "",
-    // });
   };
+
   return (
-    <Container maxWidth="lg" spacing={2}>
-      <Box component="form" onSubmit={handleSubmit} sx={{ minWidth: 500 }}>
-        <Typography variant="h5" gutterBottom mb={3}>
-          Add Category
-        </Typography>
-        <Grid
-          container
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+    <Container maxWidth="lg" sx={{ py: 2 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 2, sm: 3, md: 4 },
+          maxWidth: 800,
+          mx: "auto",
+          bgcolor: "background.paper",
+          width: "100%",
+          overflow: "hidden",
+        }}
+      >
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            width: "100%", // Use full width
+            maxWidth: "100%", // Prevent horizontal overflow
+          }}
         >
-          <Grid size={{ xs: 12, md: 7 }}>
-            <TextField
-              name="name"
-              value={name}
-              fullWidth
-              onChange={handleChange}
-              label="Category"
-            />
+          <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
+            Add Category
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                name="name"
+                value={name}
+                fullWidth
+                onChange={handleChange}
+                label="Category"
+                size="small"
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                name="general_requirements"
+                value={general_requirements}
+                fullWidth
+                onChange={handleChange}
+                label="General Requirement"
+                size="small"
+                multiline
+                rows={3}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                type="file"
+                label="Requirement file"
+                name="requirement_file"
+                fullWidth
+                onChange={handleChange}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                  htmlInput: { accept: ".pdf" },
+                }}
+                helperText="Upload a PDF file (max 5MB)"
+                size="small"
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Button
+                sx={{ margin: "10px 0" }}
+                variant="contained"
+                type="submit"
+                fullWidth
+                size="large"
+              >
+                Create Category
+              </Button>
+            </Grid>
           </Grid>
-          <Grid size={{ xs: 12, md: 7 }}>
-            <TextField
-              name="general_requirements"
-              value={general_requirements}
-              fullWidth
-              onChange={handleChange}
-              label="General Requirement"
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 7 }}>
-            <TextField
-              type="file"
-              label="Requirement file"
-              name="requirement_file"
-              fullWidth
-              onChange={handleChange}
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ accept: ".pdf" }}
-              required
-              helperText="Upload a PDF file (max 5MB)"
-            />
-          </Grid>
-        </Grid>
-        <Grid size={{ xs: 12, md: 7 }}>
-          <Button sx={{ margin: "10px 0" }} variant="contained" type="submit">
-            Create Category
-          </Button>
-        </Grid>
-      </Box>
+        </Box>
+      </Paper>
     </Container>
   );
 };

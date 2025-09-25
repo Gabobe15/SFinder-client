@@ -19,13 +19,9 @@ const App = () => {
   return (
     <>
       <CssBaseline />
-      {/* <Header /> */}
-      {/* <AppBar /> */}
       <AppProfile />
-      {/* <Container maxWidth="lg" > */}
       <Outlet />
-      {/* </Container> */}
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };

@@ -106,7 +106,7 @@ const AdminRegiter = () => {
       role: "",
       address: "",
       password: "",
-      confirmPassword:"",
+      confirmPassword: "",
       field_study: "",
     });
   };
@@ -126,7 +126,7 @@ const AdminRegiter = () => {
 
   return (
     <Container
-      maxWidth="sm"
+      maxWidth="md"
       sx={{
         minHeight: "50vh",
         display: "flex",
@@ -248,7 +248,14 @@ const AdminRegiter = () => {
             </Grid>
             <Grid size={{ xs: 12 }}>
               <FormControl component="fieldset">
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    flexWrap: "wrap",
+                  }}
+                >
                   <FormLabel component="legend" sx={{ mb: 0, marginRight: 1 }}>
                     Sex:
                   </FormLabel>
@@ -258,25 +265,27 @@ const AdminRegiter = () => {
                     value={sex}
                     onChange={handleChange}
                     row
-                    sx={{ display: "flex", gap: 2 }}
+                    sx={{
+                      display: "flex",
+                      flexWrap: { xs: "wrap", sm: "nowrap" },
+                      gap: { xs: 1, sm: 2 },
+                    }}
                   >
                     <FormControlLabel
                       value="Male"
                       control={<Radio />}
                       label="Male"
-                      id="male"
                     />
                     <FormControlLabel
                       value="Female"
                       control={<Radio />}
                       label="Female"
-                      id="female"
                     />
                     <FormControlLabel
                       value="institution"
                       control={<Radio />}
                       label="Educational Institution"
-                      id="institution"
+                      sx={{ whiteSpace: "nowrap" }}
                     />
                   </RadioGroup>
                 </Box>

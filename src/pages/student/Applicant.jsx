@@ -51,7 +51,7 @@ const Applicant = () => {
 
   console.log(state);
   return (
-    <Container spacing={3} maxWidth="lg" sx={{ mt: 5 }}>
+    <Container spacing={3} maxWidth="lg" sx={{ mt: 5, mb:3 }}>
       <Button
         onClick={() => navigate(`/student`)}
         size="large"
