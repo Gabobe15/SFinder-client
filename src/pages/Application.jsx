@@ -24,15 +24,23 @@ const MultiStepForm = () => {
   const [loading, setLoading] = useState(false);
   const steps = ["Personal Information", "Academic Information"];
   const location = useLocation();
+
+  // ✅ Correctly map university_id → universityId
   const {
     course: initialCourse,
     university: initialUniversity,
-    id: universityId,
+    university_id: universityId,
     course_id: courseId,
   } = location.state || {};
-  const { addApplicants } = useUniversity();
 
-  console.log("Location state", location.state);
+  console.log("Extracted values:", {
+    initialCourse,
+    initialUniversity,
+    universityId,
+    courseId,
+  });
+
+  const { addApplicants } = useUniversity();
 
   const [step, setStep] = useState(1);
   const [state, setState] = useState({
@@ -47,13 +55,20 @@ const MultiStepForm = () => {
     passport_photo: null,
     // academic info
     course: courseId,
-    university: universityId,
+    university: universityId, // ✅ use integer ID
     education_level: "",
     qualification: "",
     recommendation: null,
     academic_transcript: null,
     personal_statement: null,
   });
+
+  console.log(
+    "university ID",
+    universityId,
+    "University Name",
+    initialUniversity
+  );
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -99,7 +114,6 @@ const MultiStepForm = () => {
         !state.address ||
         !state.passport_photo
       ) {
-        toast.error("Please fill all required fields");
         return;
       }
     }
@@ -107,6 +121,7 @@ const MultiStepForm = () => {
   };
 
   const prevStep = () => setStep((prev) => prev - 1);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -118,22 +133,20 @@ const MultiStepForm = () => {
       const intUniversityId = parseInt(universityId);
       const intCourseId = parseInt(courseId);
 
-      console.log("Sending IDs:", { intUniversityId, intCourseId });
+      console.log("Sending IDs:", {
+        universityId: intUniversityId,
+        courseId: intCourseId,
+      });
 
       Object.entries(state).forEach(([key, value]) => {
         if (value) {
-          // For file fields, append directly
           if (value instanceof File) {
             formdata.append(key, value);
-          }
-          // For ID fields, ensure they're integers
-          else if (key === "university") {
+          } else if (key === "university") {
             formdata.append(key, intUniversityId);
           } else if (key === "course") {
             formdata.append(key, intCourseId);
-          }
-          // For other fields, append as-is
-          else {
+          } else {
             formdata.append(key, value);
           }
         }
@@ -145,7 +158,7 @@ const MultiStepForm = () => {
       }
 
       await addApplicants(formdata);
-      toast.success("Your application has been received!");
+
       navigate("/");
     } catch (error) {
       toast.error("Submission failed. Please try again.");
@@ -154,28 +167,6 @@ const MultiStepForm = () => {
       setLoading(false);
     }
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-
-  //   try {
-  //     const formdata = new FormData();
-  //     Object.entries(state).forEach(([key, value]) => {
-  //       if (value) formdata.append(key, value);
-  //     });
-
-  //     await addApplicants(formdata);
-  //     toast.success(
-  //       "Your application has been received. We will send you an email after evaluation!"
-  //     );
-  //   } catch (error) {
-  //     toast.error("Submission failed. Please try again.");
-  //     console.log(error?.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handlePhoneChange = (newValue) => {
     setState((prev) => ({
@@ -337,26 +328,12 @@ const MultiStepForm = () => {
               </Grid>
 
               <div>
-                <input
-                  type="hidden"
-                  name="course"
-                  value={courseId}
-                  disabled
-                  onChange={handleChange}
-                  required
-                />
+                <input type="hidden" name="course" value={courseId} />
                 <p>Course: {initialCourse}</p>
               </div>
               <div>
-                <input
-                  type="hidden"
-                  name="university"
-                  value={universityId}
-                  disabled
-                  onChange={handleChange}
-                  required
-                />
-                <p>University:{initialUniversity}</p>
+                <input type="hidden" name="university" value={universityId} />
+                <p>University: {initialUniversity}</p>
               </div>
 
               <Grid size={{ xs: 12, md: 6 }}>
@@ -452,11 +429,7 @@ const MultiStepForm = () => {
             />
             <Box sx={{ display: "flex", gap: 1 }}>
               {step > 1 && (
-                <Button
-                  variant="outlined"
-                  onClick={prevStep}
-                  disabled={loading}
-                >
+                <Button variant="outlined" onClick={prevStep} disabled={loading}>
                   Back
                 </Button>
               )}

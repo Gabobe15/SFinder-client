@@ -14,18 +14,20 @@ import {
   Paper, // Added Paper component
 } from "@mui/material";
 import { toast } from "react-toastify";
+import useAuth from "../hooks/useAuth";
 
 const AddCourse = () => {
+  const { UserList } = useAuth();
   const { getCategory } = useCategory();
   const { addCourse } = useCourse();
 
   const [categories, setCategories] = useState([]);
+  const [user, setUser] = useState(null);
 
   const [form, setForm] = useState({
     course: "",
     level: "diploma",
     category_id: "",
-    deadline: "",
   });
 
   const fetchCategories = async () => {
@@ -42,8 +44,18 @@ const AddCourse = () => {
     }
   };
 
+  const fetchUser = async () => {
+    try {
+      const response = await UserList();
+      setUser(response);
+    } catch (error) {
+      console.log("something went wrong", error?.message);
+    }
+  };
+
   useEffect(() => {
     fetchCategories();
+    fetchUser();
   }, []);
 
   const handleChange = (e) => {
@@ -53,22 +65,22 @@ const AddCourse = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!course || !level || !category_id || !deadline) return;
+    if (!course || !level || !category_id) return;
     try {
       await addCourse(form);
       setForm({
         course: "",
         level: "",
         category_id: "",
-        deadline: "",
       });
-      toast.success("course added");
     } catch (error) {
       toast.error("something went wrong", error?.message);
     }
   };
 
-  const { course, category_id, level, deadline } = form;
+  const { course, category_id, level } = form;
+
+  console.log(user);
 
   return (
     <Paper
@@ -122,6 +134,7 @@ const AddCourse = () => {
               </Select>
             </FormControl>
           </Grid>
+       
           <Grid size={{ xs: 12 }}>
             <FormControl fullWidth variant="outlined" size="small">
               <InputLabel id="category-select-label">Field of Study</InputLabel>
@@ -133,32 +146,19 @@ const AddCourse = () => {
                 onChange={handleChange}
                 label="Field of Study"
               >
+            
                 <MenuItem value="" disabled>
                   Select a field
                 </MenuItem>
-                {categories.map((cat) => (
-                  <MenuItem key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </MenuItem>
-                ))}
+                {categories
+                  .filter((category) => category?.name === user?.field_study)
+                  .map(({ name, id }) => (
+                    <MenuItem key={id} value={id}>
+                      {name}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              size="small"
-              fullWidth
-              type="date"
-              name="deadline"
-              value={deadline}
-              label="Deadline"
-              onChange={handleChange}
-              slotProps={{
-                inputLabel: {
-                  shrink: true,
-                },
-              }}
-            />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Button variant="contained" type="submit" fullWidth size="large">

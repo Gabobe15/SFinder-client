@@ -64,9 +64,16 @@ const Applicants = () => {
                     sx={{ mt: 1, display: "flex", alignItems: "center" }}
                   >
                     <Chip
-                      label={(status == "pending" && "Submited") || "Submited"}
+                      label={
+                        status == "pending"
+                          ? "Submited"
+                          : status == "accepted"
+                          ? "Accepted"
+                          : "rejected"
+                      }
+
                       color={
-                        status === "approved"
+                        status === "accepted"
                           ? "success"
                           : status === "rejected"
                           ? "error"

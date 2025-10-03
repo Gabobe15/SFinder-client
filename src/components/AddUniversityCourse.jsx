@@ -15,8 +15,12 @@ import {
   Typography,
 } from "@mui/material";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const AddUniversityCourse = () => {
+  const user = useSelector((state) => state.auth.user);
+  console.log("user", user);
+  const userId = user?.id;
   const { getCourses } = useCourse();
   const { UserList } = useAuth();
   const { addUniversityCourses } = useUniversity();
@@ -28,7 +32,6 @@ const AddUniversityCourse = () => {
   const [form, setForm] = useState({
     available_slots: "",
     course_id: "",
-    requirements: "",
     deadline: "",
   });
 
@@ -64,12 +67,7 @@ const AddUniversityCourse = () => {
     e.preventDefault();
 
     // Validation
-    if (
-      !form.course_id ||
-      !form.available_slots ||
-      !form.requirements ||
-      !form.deadline
-    ) {
+    if (!form.course_id || !form.available_slots || !form.deadline) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -79,12 +77,9 @@ const AddUniversityCourse = () => {
       await addUniversityCourses({
         available_slots: Number(form.available_slots),
         course_id: Number(form.course_id),
-        requirements: form.requirements,
+        university_id: Number(userId),
         deadline: form.deadline,
-        university: category?.id,
       });
-
-      toast.success("Course added successfully!");
 
       // Reset form
       setForm({
@@ -101,7 +96,9 @@ const AddUniversityCourse = () => {
     }
   };
 
-  const { available_slots, course_id, requirements, deadline } = form;
+  const { available_slots, course_id, deadline } = form;
+  console.log(courses);
+  console.log(category);
 
   return (
     <Paper
@@ -140,30 +137,16 @@ const AddUniversityCourse = () => {
                   Select a course
                 </MenuItem>
                 {courses
-                  .filter((course) => course.category?.name === category?.study)
+                  .filter(
+                    (course) => course.category?.name === category?.field_study
+                  )
                   .map(({ course, id }) => (
                     <MenuItem key={id} value={id}>
-                      {" "}
-                      {/* Changed to value={id} */}
                       {course}
                     </MenuItem>
                   ))}
               </Select>
             </FormControl>
-          </Grid>
-
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              fullWidth
-              name="requirements"
-              value={requirements}
-              onChange={handleChange}
-              type="text"
-              required
-              label="Requirements"
-              multiline
-              rows={3}
-            />
           </Grid>
 
           <Grid size={{ xs: 12 }}>
@@ -175,7 +158,7 @@ const AddUniversityCourse = () => {
               type="number"
               required
               label="Available Slots"
-              inputProps={{ min: 1 }}
+              slotProps={{ htmlInput: { min: 1 } }}
             />
           </Grid>
 
@@ -187,9 +170,11 @@ const AddUniversityCourse = () => {
               value={deadline}
               onChange={handleChange}
               label="Deadline"
-              InputLabelProps={{ shrink: true }}
+              slotProps={{
+                inputLabel: { shrink: true },
+                htmlInput: { min: new Date().toISOString().split("T")[0] },
+              }}
               required
-              slotProps={{ min: new Date().toISOString().split("T")[0] }} // Disable past dates
             />
           </Grid>
 

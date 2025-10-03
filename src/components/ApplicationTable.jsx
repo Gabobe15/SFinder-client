@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import DescriptionIcon from "@mui/icons-material/Description";
 import useUniversity from "../hooks/useUniversity";
 import { NavLink } from "react-router-dom";
 import { DataGrid, GridToolbar, GridActionsCellItem } from "@mui/x-data-grid";
@@ -9,11 +11,12 @@ import {
   CircularProgress,
   Alert,
   Chip,
+  Button,
 } from "@mui/material";
 
 export default function DataTable() {
   const { getUniversityCourses, getApplicants } = useUniversity();
-  const [applications, setApplications] = useState([]);
+  const [_, setApplications] = useState([]);
   const [state, setState] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,6 +24,10 @@ export default function DataTable() {
     page: 0,
     pageSize: 5,
   });
+
+  // Get current user from Redux
+  const currentUser = useSelector((state) => state.auth.user);
+  const currentUserId = currentUser?.id;
 
   const fetchApiData = async () => {
     setLoading(true);
@@ -41,11 +48,12 @@ export default function DataTable() {
   };
 
   useEffect(() => {
-    fetchApiData();
-  }, []);
+    if (currentUserId) {
+      fetchApiData();
+    }
+  }, [currentUserId]);
 
-  console.log("Applications:", applications);
-  console.log("Courses:", state);
+
 
   const columns = [
     {
@@ -60,10 +68,48 @@ export default function DataTable() {
       width: 150,
     },
     {
-      field: "requirements",
+      field: "level",
+      headerName: "Level",
+      width: 250,
+      flex: 1,
+    },
+    {
+      field: "requirement_file",
       headerName: "Requirements",
       width: 250,
       flex: 1,
+      renderCell: (params) => {
+        if (!params.value) {
+          return (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              fontStyle="italic"
+            >
+              No requirements file
+            </Typography>
+          );
+        }
+
+        return (
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<DescriptionIcon />}
+            href={params.value}
+            target="_blank"
+            download
+            component="a"
+            sx={{
+              textTransform: "none",
+              fontWeight: "500",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            PDF
+          </Button>
+        );
+      },
     },
     {
       field: "available_slots",
@@ -74,45 +120,75 @@ export default function DataTable() {
       headerAlign: "center",
     },
     {
-      field: "deadline",
+      field: "formatted_deadline",
       headerName: "Deadline",
       width: 120,
       valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        return new Date(params.value).toLocaleDateString();
+        return params.value;
       },
     },
     {
       field: "status",
       headerName: "Status",
-      width: 120,
+      width: 140,
       renderCell: (params) => {
-        const alreadyApplied = applications.some(
-          (app) => app.course == params.row.course_id
-        );
-        return (
-          <Chip
-            label={alreadyApplied ? "Applied" : "Available"}
-            color={alreadyApplied ? "success" : "primary"}
-            size="small"
-            variant={alreadyApplied ? "filled" : "outlined"}
-          />
-        );
+        const { has_applied, is_available, is_past_deadline } = params.row;
+
+        if (has_applied) {
+          return (
+            <Chip
+              label="Applied"
+              color="success"
+              size="small"
+              variant="filled"
+            />
+          );
+        } else if (!is_available) {
+          if (is_past_deadline) {
+            return (
+              <Chip
+                label="Closed"
+                color="error"
+                size="small"
+                variant="filled"
+              />
+            );
+          } else {
+            return (
+              <Chip
+                label="Unavailable"
+                color="warning"
+                size="small"
+                variant="filled"
+              />
+            );
+          }
+        } else {
+          return (
+            <Chip
+              label="Available"
+              color="primary"
+              size="small"
+              variant="outlined"
+            />
+          );
+        }
       },
     },
     {
       field: "actions",
       headerName: "Actions",
-      width: 120,
+      width: 150,
       type: "actions",
       getActions: (params) => {
-        const alreadyApplied = applications.some(
-          (app) => app.course == params.row.course_id
-        );
+        const { has_applied, is_available, is_past_deadline, available_slots } =
+          params.row;
 
-        return [
-          alreadyApplied ? (
+        // User has already applied
+        if (has_applied) {
+          return [
             <Box
+              key="applied"
               component="span"
               sx={{
                 px: 2,
@@ -122,26 +198,50 @@ export default function DataTable() {
                 fontSize: "0.875rem",
               }}
             >
-              Applied
-            </Box>
-          ) : (
-            <NavLink
-              to="/applications"
-              state={{
-                course: params.row.course,
-                university: params.row.university,
-                id: params.row.id,
-                course_id: params.row.course_id,
-              }}
-              style={{ textDecoration: "none" }}
+              Already Applied
+            </Box>,
+          ];
+        }
+
+        // Course is not available (deadline passed or no slots)
+        if (!is_available) {
+          let reason = "Closed";
+          if (is_past_deadline) {
+            reason = "Deadline Passed";
+          } else if (available_slots <= 0) {
+            reason = "No Slots";
+          } else if (!params.row.deadline) {
+            reason = "No Deadline";
+          }
+
+          return [
+            <Button
+              key="closed"
+              disabled
+              size="small"
+              variant="outlined"
+              sx={{ color: "text.disabled", borderColor: "text.disabled" }}
             >
-              <GridActionsCellItem
-                // icon={<HowToReg />}
-                label="Apply Now"
-                showInMenu
-              />
-            </NavLink>
-          ),
+              {reason}
+            </Button>,
+          ];
+        }
+
+        // Course is available for application
+        return [
+          <NavLink
+            key="apply"
+            to="/applications"
+            state={{
+              course: params.row.course,
+              university: params.row.university,
+              university_id: params.row.university_id,
+              course_id: params.row.course_id,
+            }}
+            style={{ textDecoration: "none" }}
+          >
+            <GridActionsCellItem label="Apply Now" showInMenu />
+          </NavLink>,
         ];
       },
     },
@@ -151,6 +251,17 @@ export default function DataTable() {
     ...item,
     id: item.id,
   }));
+
+  // Debug: Check the data structure
+  useEffect(() => {}, [state]);
+
+  if (!currentUserId && !loading) {
+    return (
+      <Alert severity="warning" sx={{ mb: 2 }}>
+        Please log in to view courses.
+      </Alert>
+    );
+  }
 
   if (loading) {
     return (

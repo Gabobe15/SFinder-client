@@ -62,6 +62,9 @@ const ListUser = () => {
     );
   }
 
+  console.log(users);
+  
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>

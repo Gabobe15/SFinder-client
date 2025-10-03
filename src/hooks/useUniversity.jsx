@@ -4,11 +4,11 @@ import { toast } from "react-toastify";
 
 const useUniversity = () => {
   const token = useSelector((state) => state.auth.token);
-
+  
   const getUniversityCourses = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/admissions/university-courses",
+        "http://127.0.0.1:8000/api/admissions/university-courses/",
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -67,8 +67,11 @@ const useUniversity = () => {
           },
         }
       );
+      toast.success("Your application has been received!");
       return response.data;
     } catch (error) {
+      toast.success("Something went wrong!");
+
       console.log(error.message);
     }
   };

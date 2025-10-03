@@ -31,6 +31,8 @@ const UniversityCourses = () => {
     fetchApplicants();
   }, []);
 
+  console.log(state);
+
   return (
     <div>
       <h1>Users</h1>
@@ -56,7 +58,16 @@ const UniversityCourses = () => {
                 requirements,
                 university,
                 course_id,
+                university_id,
               }) => {
+                console.log("Available fields:", {
+                  id,
+                  course_id,
+                  course,
+                  university_id,
+                  university,
+                });
+
                 const alreadyApplied = applications.some(
                   (app) => app.course == course_id
                 );
@@ -78,7 +89,7 @@ const UniversityCourses = () => {
                               state: {
                                 course,
                                 university,
-                                id,
+                                university_id,
                                 course_id,
                               },
                             })

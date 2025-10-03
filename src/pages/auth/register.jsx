@@ -69,7 +69,6 @@ const RegisterPage = () => {
 
     try {
       registerAuth({ fullname, email, mobile, sex, address, password });
-      toast.success("User registered suggessfully!");
       setTimeout(() => {
         nagivate("/login");
       }, 5000);

@@ -14,11 +14,10 @@ import {
 const AddCategory = () => {
   const [state, setState] = useState({
     name: "",
-    general_requirements: "",
     requirement_file: null,
   });
 
-  const { name, general_requirements } = state;
+  const { name } = state;
 
   const { addCategory } = useCategory();
 
@@ -45,7 +44,6 @@ const AddCategory = () => {
     e.preventDefault();
     const formdata = new FormData();
     formdata.append("name", name);
-    formdata.append("general_requirements", general_requirements);
     if (state.requirement_file) {
       formdata.append("requirement_file", state.requirement_file);
     }
@@ -89,18 +87,7 @@ const AddCategory = () => {
                 size="small"
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                name="general_requirements"
-                value={general_requirements}
-                fullWidth
-                onChange={handleChange}
-                label="General Requirement"
-                size="small"
-                multiline
-                rows={3}
-              />
-            </Grid>
+   
             <Grid size={{ xs: 12 }}>
               <TextField
                 type="file"

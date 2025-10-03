@@ -52,9 +52,7 @@ const CourseCategory = () => {
                 <TableCell>
                   <strong>Name</strong>
                 </TableCell>
-                <TableCell>
-                  <strong>General Requirement</strong>
-                </TableCell>
+        
                 <TableCell>
                   <strong>Requirements</strong>
                 </TableCell>
@@ -63,14 +61,10 @@ const CourseCategory = () => {
             <TableBody>
               {category.length > 0 ? (
                 category.map(
-                  ({ id, name, general_requirements, requirement_file }) => (
+                  ({ id, name, requirement_file }) => (
                     <TableRow key={id}>
                       <TableCell>{name}</TableCell>
-                      <TableCell>
-                        {general_requirements.split(",")[0]}
-                        <br />
-                        {general_requirements.split(",")[1]}
-                      </TableCell>
+                    
 
                       <TableCell>
                         <Button

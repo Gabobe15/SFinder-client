@@ -162,9 +162,15 @@ const Applicant = () => {
                   <strong>Status:</strong>
                 </Typography>
                 <Chip
-                  label={state?.status || "Pending"}
+                   label={
+                       state?.status == "pending"
+                          ? "Submited"
+                          : state?.status == "accepted"
+                          ? "Accepted"
+                          : "rejected"
+                      }
                   color={
-                    state?.status === "approved"
+                    state?.status === "accepted"
                       ? "success"
                       : state?.status === "rejected"
                       ? "error"

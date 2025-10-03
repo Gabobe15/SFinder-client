@@ -6,7 +6,7 @@ const useCourse = () => {
   const token = useSelector((state) => state.auth.token);
 
   //   console.log(token);
-
+///
   const addCourse = async (data) => {
     try {
       const response = await axios.post(
