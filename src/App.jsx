@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { clearUserInfo } from "./features/authSlice";
-import { AppBar, AppProfile } from "./pages";
+import { AppProfile } from "./pages";
 
 const App = () => {
   const dispatch = useDispatch();

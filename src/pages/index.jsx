@@ -25,5 +25,4 @@ export { default as Applicant } from "./university/Applicant";
 export { default as SApplicants } from "./student/Applicants";
 export { default as SApplicant } from "./student/Applicant";
 
-export { default as AppBar } from "./AppBar";
 export { default as AppProfile } from "./AppProfile";

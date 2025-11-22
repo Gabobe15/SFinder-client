@@ -7,30 +7,32 @@ const Footer = () => {
         background: "#000",
         color: "#fff",
         py: 2,
-        // position: "fixed",
-        // bottom: 0,
-        // left: 0,
-        // right: 0,
       }}
     >
       <Container maxWidth="lg">
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box>
-            <Typography variant="h5">Scholarship finder</Typography>
+            <Typography variant="h5">EduScholar</Typography>
             <Typography variant="caption">
               Helping Kenyan students finding scholarship for Teriary Education.
             </Typography>
           </Box>
           <Box>
             <Typography variant="body1">Contact</Typography>
-            <Typography variant="caption">07 2200 0000</Typography>
+            <Typography variant="caption">Number: 07 2200 0000</Typography>
             <br />
-            <Typography variant="caption">Nairobi,Kenya</Typography>
+            <Typography variant="caption">
+              Email: eduScholar@gmail.com
+            </Typography>
+            <br />
+            <Typography variant="caption">
+              Location: Diamond Plaza 1, Parklands
+            </Typography>
           </Box>
         </Box>
-        <Typography variant="body2" sx={{ textAlign: "center" }} >
-          &copy; {new Date().getFullYear()}. <i>Scholarship finder</i>. All
-          rights reserved
+        <Typography variant="body2" sx={{ textAlign: "center" }}>
+          &copy; {new Date().getFullYear()}. <i>EduScholar</i>. All rights
+          reserved
         </Typography>
       </Container>
     </Box>

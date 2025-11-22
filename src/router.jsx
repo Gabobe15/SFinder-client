@@ -20,7 +20,6 @@ import {
   SApplicants,
   SApplicant,
   Account,
-  AppBar,
   AppProfile,
   Profile,
 } from "./pages";
@@ -69,7 +68,6 @@ export const router = createBrowserRouter([
           { path: "applications", element: <StudentApplication /> },
           { path: "change-password", element: <ChangePassword /> },
           { path: "account", element: <Account /> },
-          { path: "appbar", element: <AppBar /> },
           { path: "profile", element: <Profile /> },
         ],
       },

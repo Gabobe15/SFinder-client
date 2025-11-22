@@ -95,7 +95,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            eduFinder
+            EduScholar
             {/* desktop version */}
           </Typography>
 
@@ -158,7 +158,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            eduFinder
+            EduScholar
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map(({ name, link }, index) => (

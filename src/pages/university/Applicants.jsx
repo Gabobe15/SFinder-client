@@ -205,6 +205,20 @@ const Applicants = () => {
 
   return (
     <Box sx={{ height: 500, width: "100%" }}>
+      <Box
+        sx={{ display: "flex", justifyContent: "flex-end" }}
+      >
+        <Button
+          onClick={() => window.print()}
+          sx={{
+            bgcolor: "blue",
+            color: "#fff",
+            px:2
+          }}
+        >
+          Print
+        </Button>
+      </Box>
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
         Applications Review
       </Typography>
@@ -216,7 +230,7 @@ const Applicants = () => {
           </Typography>
         </Paper>
       ) : (
-        <Paper sx={{ height: "100%", width: "100%"}}>
+        <Paper sx={{ height: "100%", width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}

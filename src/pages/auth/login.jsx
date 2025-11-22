@@ -78,7 +78,7 @@ const Login = () => {
           gutterBottom
           sx={{ my: 3, fontStyle:'italic' }}
         >
-          scholarship finder
+          EduScholar
         </Typography>
         <Box
           component="form"
@@ -178,50 +178,3 @@ const Login = () => {
 };
 
 export default Login;
-
-{
-  /* <TextField
-          id="email"
-          type="email"
-          name="email"
-          label="Email"
-          variant="outlined"
-          value={email}
-          onChange={handleChange}
-        />
-        <TextField
-          id="password"
-          name="password"
-          label="Password"
-          variant="outlined"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={handleChange}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label={
-                      showPassword ? "hide password" : "show password"
-                    }
-                    onClick={handleClickShowPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-
-        <Button variant="contained" type="submit">
-          Login
-        </Button>
-        {error && (
-          <Typography variant="caption" color="error" sx={{ mt: 2 }}>
-            {error}
-          </Typography>
-        )} */
-}

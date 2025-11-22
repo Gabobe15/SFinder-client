@@ -176,7 +176,7 @@ const MultiStepForm = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ my: 2 }}>
       <Paper elevation={3} sx={{ p: 4, position: "relative" }}>
         <Typography variant="h4" gutterBottom align="center">
           University Application
@@ -429,7 +429,11 @@ const MultiStepForm = () => {
             />
             <Box sx={{ display: "flex", gap: 1 }}>
               {step > 1 && (
-                <Button variant="outlined" onClick={prevStep} disabled={loading}>
+                <Button
+                  variant="outlined"
+                  onClick={prevStep}
+                  disabled={loading}
+                >
                   Back
                 </Button>
               )}

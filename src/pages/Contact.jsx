@@ -15,7 +15,7 @@ const contactData = [
   {
     name: "Email",
     icon: MailOutlineIcon,
-    label: "edufinder@gmail.com",
+    label: "eduScholar@gmail.com",
   },
   {
     name: "Location",

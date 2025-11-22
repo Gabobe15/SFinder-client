@@ -21,7 +21,7 @@ const Headers = () => {
       >
         <h2>
           {" "}
-          <i>Scholarship finder</i>
+          <i>EduScholar</i>
         </h2>
         <Navlink />
         {token && name && (
