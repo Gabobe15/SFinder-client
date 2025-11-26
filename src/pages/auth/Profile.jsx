@@ -52,16 +52,6 @@ const Profile = () => {
     fetchUserData();
   }, []);
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "Not available";
-    return new Date(dateString).toLocaleDateString();
-  };
-
-  // const navigationItems = [
-  //   { key: 'profile', label: 'Profile', to: '/profile' },
-  //   { key: 'account', label: 'Account Settings', to: '/account', icon: <LockIcon /> }
-  // ];
-
   if (loading)
     return (
       <Backdrop open sx={{ color: "#fff", zIndex: 9999 }}>
@@ -84,30 +74,6 @@ const Profile = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, minHeight: "60vh" }}>
-      {/* Navigation */}
-      {/* <Box sx={{ display: "flex", gap: 1, mb: 4 }}>
-        {navigationItems.map((item) => (
-          <NavLink
-            key={item.key}
-            to={item.to}
-            style={({ isActive }) => ({
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              background: isActive ? "primary.main" : "transparent",
-              color: isActive ? "white" : "primary.main",
-              padding: "8px 16px",
-              borderRadius: "8px",
-              border: isActive ? "none" : "1px solid",
-              borderColor: "primary.main",
-            })}
-          >
-            {item.icon && React.cloneElement(item.icon, { sx: { mr: 1, fontSize: '1rem' } })}
-            {item.label}
-          </NavLink>
-        ))}
-      </Box> */}
-
       {/* Profile Card */}
       <Paper elevation={2} sx={{ borderRadius: 3, overflow: "hidden" }}>
         <Box
@@ -146,14 +112,6 @@ const Profile = () => {
 
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 3 }}>
                   <Chip label={data?.role} color="primary" variant="filled" />
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ display: "flex", alignItems: "center" }}
-                  >
-                    <CalendarTodayIcon sx={{ mr: 0.5, fontSize: "1rem" }} />
-                    Member since {formatDate(data?.date_joined)}
-                  </Typography>
                 </Box>
 
                 <Grid container spacing={2}>
