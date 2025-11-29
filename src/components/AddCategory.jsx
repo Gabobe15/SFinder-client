@@ -69,8 +69,8 @@ const AddCategory = () => {
           component="form"
           onSubmit={handleSubmit}
           sx={{
-            width: "100%", // Use full width
-            maxWidth: "100%", // Prevent horizontal overflow
+            width: "100%", 
+            maxWidth: "100%", 
           }}
         >
           <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>

@@ -14,7 +14,8 @@ const University = () => {
     <Box
       sx={{
         background: "#f7f7f7ff",
-        height:'120vh'
+        height: "120vh",
+        marginBottom: "40px",
       }}
     >
       <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -28,7 +29,7 @@ const University = () => {
           }}
         >
           {navItems.map(({ to, label }) => {
-            // const isActive = location.pathname.endsWith(to);
+            const isActive = location.pathname.endsWith(to);
 
             return (
               <Button
@@ -36,11 +37,12 @@ const University = () => {
                 component={NavLink}
                 to={to}
                 end
-                // variant={isActive ? "contained" : "outlined"}
+                variant={isActive ? "contained" : "outlined"}
                 sx={{
                   textDecoration: "none",
                   textTransform: "none",
-                  // fontWeight: isActive ? 600 : 400,
+                  fontWeight: isActive ? 600 : 400,
+                  marginTop: "40px",
                 }}
               >
                 {label}

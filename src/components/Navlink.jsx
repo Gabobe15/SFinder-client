@@ -5,7 +5,6 @@ import { NavLink } from "react-router-dom";
 const Navlink = () => {
   const user = useSelector((state) => state.auth.user);
   const role = user?.role;
-  console.log(role);
 
   return (
     <div style={{ display: "flex", columnGap: "10px", textDecoration: "none" }}>

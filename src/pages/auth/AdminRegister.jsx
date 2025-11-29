@@ -85,7 +85,6 @@ const AdminRegiter = () => {
       alert("password don`t match");
       return;
     }
-    console.log(state);
 
     registerAuth({
       fullname,

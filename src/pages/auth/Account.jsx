@@ -99,11 +99,13 @@ const Account = () => {
     <Container
       maxWidth="md"
       sx={{
-        minHeight: "40vh",
+        minHeight: "60vh",
         display: "flex",
         alignContent: "center",
+        justifyContent: "center",
         flexDirection: "column",
         py: 4,
+        margin: "40px auto",
       }}
     >
       <Box sx={{ display: "flex", gap: 2, my: 2, alignItems: "center" }}>

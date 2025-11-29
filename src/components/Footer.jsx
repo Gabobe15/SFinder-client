@@ -12,7 +12,7 @@ const Footer = () => {
       <Container maxWidth="lg">
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box>
-            <Typography variant="h5">EduScholar</Typography>
+            <Typography variant="h5">ScholFind</Typography>
             <Typography variant="caption">
               Helping Kenyan students finding scholarship for Teriary Education.
             </Typography>
@@ -22,7 +22,7 @@ const Footer = () => {
             <Typography variant="caption">Number: 07 2200 0000</Typography>
             <br />
             <Typography variant="caption">
-              Email: eduScholar@gmail.com
+              Email: ScholFind@gmail.com
             </Typography>
             <br />
             <Typography variant="caption">
@@ -31,7 +31,7 @@ const Footer = () => {
           </Box>
         </Box>
         <Typography variant="body2" sx={{ textAlign: "center" }}>
-          &copy; {new Date().getFullYear()}. <i>EduScholar</i>. All rights
+          &copy; {new Date().getFullYear()}. <i>ScholFind</i>. All rights
           reserved
         </Typography>
       </Container>

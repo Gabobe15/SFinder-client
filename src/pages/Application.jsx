@@ -25,20 +25,12 @@ const MultiStepForm = () => {
   const steps = ["Personal Information", "Academic Information"];
   const location = useLocation();
 
-  // ✅ Correctly map university_id → universityId
   const {
     course: initialCourse,
     university: initialUniversity,
     university_id: universityId,
     course_id: courseId,
   } = location.state || {};
-
-  console.log("Extracted values:", {
-    initialCourse,
-    initialUniversity,
-    universityId,
-    courseId,
-  });
 
   const { addApplicants } = useUniversity();
 
@@ -55,7 +47,7 @@ const MultiStepForm = () => {
     passport_photo: null,
     // academic info
     course: courseId,
-    university: universityId, // ✅ use integer ID
+    university: universityId, 
     education_level: "",
     qualification: "",
     recommendation: null,
@@ -129,14 +121,9 @@ const MultiStepForm = () => {
     try {
       const formdata = new FormData();
 
-      // Convert IDs to integers explicitly
       const intUniversityId = parseInt(universityId);
       const intCourseId = parseInt(courseId);
 
-      console.log("Sending IDs:", {
-        universityId: intUniversityId,
-        courseId: intCourseId,
-      });
 
       Object.entries(state).forEach(([key, value]) => {
         if (value) {
@@ -151,11 +138,6 @@ const MultiStepForm = () => {
           }
         }
       });
-
-      // Debug what's being sent
-      for (let [key, value] of formdata.entries()) {
-        console.log(key, value);
-      }
 
       await addApplicants(formdata);
 

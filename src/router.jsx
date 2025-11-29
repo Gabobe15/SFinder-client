@@ -20,7 +20,6 @@ import {
   SApplicants,
   SApplicant,
   Account,
-  AppProfile,
   Profile,
 } from "./pages";
 

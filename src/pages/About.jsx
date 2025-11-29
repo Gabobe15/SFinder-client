@@ -1,13 +1,9 @@
 import {
   Box,
-  Button,
-  TextField,
   Typography,
   Container,
   Grid,
-  Paper,
   CardMedia,
-  CardContent,
   Card,
 } from "@mui/material";
 import TargetIcon from "@mui/icons-material/Flag";

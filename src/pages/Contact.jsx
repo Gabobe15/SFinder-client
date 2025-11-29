@@ -15,7 +15,7 @@ const contactData = [
   {
     name: "Email",
     icon: MailOutlineIcon,
-    label: "eduScholar@gmail.com",
+    label: "ScholFind@gmail.com",
   },
   {
     name: "Location",
@@ -32,7 +32,6 @@ import {
   Container,
   Grid,
   Paper,
-  CardMedia,
   CardContent,
   Card,
 } from "@mui/material";
@@ -140,7 +139,6 @@ const Contact = () => {
               width: "100%",
               display: "flex",
               flexDirection: "column",
-              // alignItems: "center",
               gap: 2,
             }}
           >

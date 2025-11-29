@@ -26,8 +26,6 @@ const CourseCategory = () => {
     }
   };
 
-  console.log(category);
-
   useEffect(() => {
     fetchCategory();
   }, []);
@@ -52,7 +50,7 @@ const CourseCategory = () => {
                 <TableCell>
                   <strong>Name</strong>
                 </TableCell>
-        
+
                 <TableCell>
                   <strong>Requirements</strong>
                 </TableCell>
@@ -60,29 +58,25 @@ const CourseCategory = () => {
             </TableHead>
             <TableBody>
               {category.length > 0 ? (
-                category.map(
-                  ({ id, name, requirement_file }) => (
-                    <TableRow key={id}>
-                      <TableCell>{name}</TableCell>
-                    
-
-                      <TableCell>
-                        <Button
-                          component="a"
-                          target="_blank"
-                          href={requirement_file}
-                          download
-                          variant="outlined"
-                          size="small"
-                          startIcon={<CloudDownloadIcon />}
-                          sx={{ textDecoration: "none" }}
-                        >
-                          Download
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  )
-                )
+                category.map(({ id, name, requirement_file }) => (
+                  <TableRow key={id}>
+                    <TableCell>{name}</TableCell>
+                    <TableCell>
+                      <Button
+                        component="a"
+                        target="_blank"
+                        href={requirement_file}
+                        download
+                        variant="outlined"
+                        size="small"
+                        startIcon={<CloudDownloadIcon />}
+                        sx={{ textDecoration: "none" }}
+                      >
+                        Download
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
               ) : (
                 <TableRow>
                   <TableCell

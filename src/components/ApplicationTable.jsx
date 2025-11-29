@@ -252,7 +252,6 @@ export default function DataTable() {
     id: item.id,
   }));
 
-  // Debug: Check the data structure
   useEffect(() => {}, [state]);
 
   if (!currentUserId && !loading) {

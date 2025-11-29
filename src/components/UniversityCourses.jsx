@@ -60,14 +60,6 @@ const UniversityCourses = () => {
                 course_id,
                 university_id,
               }) => {
-                console.log("Available fields:", {
-                  id,
-                  course_id,
-                  course,
-                  university_id,
-                  university,
-                });
-
                 const alreadyApplied = applications.some(
                   (app) => app.course == course_id
                 );

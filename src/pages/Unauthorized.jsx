@@ -1,17 +1,17 @@
-import { useLocation } from "react-router-dom";
-
 const Unauthorized = () => {
-  const location = useLocation();
-  const reason = location.state?.reason;
-
   return (
-    <div>
+    <div
+      style={{
+        height: "80vh",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+      }}
+    >
       <h1>Unauthorized</h1>
-      {reason === "forbidden" ? (
-        <p>You don’t have permission to access this page.</p>
-      ) : (
-        <p>You must log in to continue.</p>
-      )}
+      <p>You don&apos;t have permission to access this page.</p>
     </div>
   );
 };

@@ -64,19 +64,31 @@ const ChangePassword = () => {
     <Container
       maxWidth="md"
       sx={{
-        minHeight: "40vh",
+        minHeight: "60vh",
         display: "flex",
         alignContent: "center",
+        justifyContent: "center",
         flexDirection: "column",
         py: 4,
+        margin: "40px auto",
       }}
     >
-      <Box sx={{display:'flex', gap:2, my:2, alignItems:'center'}}>
+      <Box sx={{ display: "flex", gap: 2, my: 2, alignItems: "center" }}>
         <NavLink style={{ textDecoration: "none" }} to="/account">
           Account
         </NavLink>
-        <NavLink style={{ textDecoration: "none" , display:'flex', alignItems:'center', background:'blue', color:'white', padding:'2px 10px'}} to="/change-password">
-          <LockIcon fontSize="small" sx={{mr:0.5}}/>
+        <NavLink
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            background: "blue",
+            color: "white",
+            padding: "2px 10px",
+          }}
+          to="/change-password"
+        >
+          <LockIcon fontSize="small" sx={{ mr: 0.5 }} />
           Security
         </NavLink>
       </Box>

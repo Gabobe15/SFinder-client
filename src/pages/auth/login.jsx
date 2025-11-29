@@ -76,9 +76,9 @@ const Login = () => {
           variant="h4"
           component="h1"
           gutterBottom
-          sx={{ my: 3, fontStyle:'italic' }}
+          sx={{ my: 3, fontStyle: "italic" }}
         >
-          EduScholar
+          ScholFind
         </Typography>
         <Box
           component="form"
@@ -92,7 +92,7 @@ const Login = () => {
           }}
         >
           <Grid container justifyContent="center" spacing={2}>
-            <Grid size={{ xs: 12}}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 id="email"
                 type="email"
