@@ -2,13 +2,17 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
+const baseURL = import.meta.env.VITE_API_URL;
+
+
+
 const useCategory = () => {
   const { token } = useSelector((state) => state.auth);
   
   const getCategory = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/admissions/categories",
+        `${baseURL}/api/admissions/categories`,
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -24,7 +28,7 @@ const useCategory = () => {
   const addCategory = async (data) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/admissions/categories",
+        `${baseURL}/api/admissions/categories`,
         data,
         {
           headers: {

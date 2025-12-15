@@ -9,6 +9,10 @@ import {
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+
+const baseURL = import.meta.env.VITE_API_URL;
+
+
 const useAuth = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -19,7 +23,7 @@ const useAuth = () => {
 
     try {
       const { data } = await axios.post(
-        "http://127.0.0.1:8000/api/auth/login",
+        `${baseURL}/api/auth/login`,
         credentials
       );
       const { token, user } = data;
@@ -49,7 +53,7 @@ const useAuth = () => {
     dispatch(setLoading(true));
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/auth/register", userInfo);
+      await axios.post(`${baseURL}/api/auth/register`, userInfo);
       toast.success("User has been created successfully!");
     } catch (error) {
       toast.error("register unsuccessful please try again!");
@@ -64,7 +68,7 @@ const useAuth = () => {
     dispatch(setLoading(true));
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/auth/logout");
+      await axios.post(`${baseURL}/api/auth/logout`);
 
       dispatch(clearUserInfo());
     } catch (error) {
@@ -79,7 +83,7 @@ const useAuth = () => {
     dispatch(setLoading(true));
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/auth/forget-password", {
+      await axios.post(`${baseURL}/api/auth/forget-password`, {
         email,
       });
       toast.success("a reset link has been sent to you email.");
@@ -95,7 +99,7 @@ const useAuth = () => {
     dispatch(setLoading(true));
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/auth/reset-password", {
+      await axios.post(`${baseURL}/api/auth/reset-password`, {
         ...paramter,
       });
       toast.success("password has been reset successful!");
@@ -112,7 +116,7 @@ const useAuth = () => {
     dispatch(setLoading(true));
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/auth/change-password",
+        "${baseURL}/api/auth/change-password",
         userData,
         {
           headers: {
@@ -134,7 +138,7 @@ const useAuth = () => {
   const UsersList = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/auth/university-list",
+        "${baseURL}/api/auth/university-list",
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -150,7 +154,7 @@ const useAuth = () => {
 
   const UserList = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/auth/user/", {
+      const response = await axios.get("${baseURL}/api/auth/user/", {
         headers: {
           Authorization: `Token ${token}`,
           "Content-Type": "application/json",
@@ -166,7 +170,7 @@ const useAuth = () => {
     dispatch(setLoading(true));
     try {
       const response = await axios.patch(
-        "http://127.0.0.1:8000/api/auth/user/",
+        "${baseURL}/api/auth/user/",
         userData,
         {
           headers: {
@@ -190,7 +194,7 @@ const useAuth = () => {
   const toggleUsersStatus = async (id, currentStatus, refresh) => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/auth/users/${id}/activate/`,
+        `${baseURL}/api/auth/users/${id}/activate/`,
         {
           is_active: !currentStatus,
         },

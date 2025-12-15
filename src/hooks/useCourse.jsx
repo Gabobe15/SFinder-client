@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+const baseURL = import.meta.env.VITE_API_URL;
+
 
 const useCourse = () => {
   const token = useSelector((state) => state.auth.token);
@@ -10,7 +12,7 @@ const useCourse = () => {
   const addCourse = async (data) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/admissions/courses/",
+        `${baseURL}/api/admissions/courses/`,
         data,
         {
           headers: {
@@ -28,7 +30,7 @@ const useCourse = () => {
   const getCourses = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/admissions/courses/",
+        `${baseURL}/api/admissions/courses/`,
         {
           headers: {
             Authorization: `Token ${token}`,

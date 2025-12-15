@@ -1,14 +1,15 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+const baseURL = import.meta.env.VITE_API_URL;
 
 const useUniversity = () => {
   const token = useSelector((state) => state.auth.token);
-  
+
   const getUniversityCourses = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/admissions/university-courses/",
+        `${baseURL}/api/admissions/university-courses/`,
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -24,7 +25,7 @@ const useUniversity = () => {
   const addUniversityCourses = async (data) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/admissions/university-courses/",
+        `${baseURL}/api/admissions/university-courses/`,
         data,
         {
           headers: {
@@ -43,7 +44,7 @@ const useUniversity = () => {
   const getApplicants = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/admissions/applications/",
+        `${baseURL}/api/admissions/applications/`,
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -58,7 +59,7 @@ const useUniversity = () => {
   const addApplicants = async (data) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/admissions/applications/",
+        `${baseURL}/api/admissions/applications/`,
         data,
         {
           headers: {
@@ -79,7 +80,7 @@ const useUniversity = () => {
   const getApplicant = async (id) => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/admissions/applications/${id}/`,
+        `${baseURL}/api/admissions/applications/${id}/`,
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -95,7 +96,7 @@ const useUniversity = () => {
   const updateApplicationStatus = async (id, status, refresh) => {
     try {
       const response = await axios.patch(
-        `http://127.0.0.1:8000/api/admissions/applications/${id}/status/`,
+        `${baseURL}/api/admissions/applications/${id}/status/`,
         { status },
         {
           headers: {
