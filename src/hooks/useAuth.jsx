@@ -116,7 +116,7 @@ const useAuth = () => {
     dispatch(setLoading(true));
     try {
       await axios.post(
-        "${baseURL}/api/auth/change-password",
+        `${baseURL}/api/auth/change-password`,
         userData,
         {
           headers: {
@@ -138,7 +138,7 @@ const useAuth = () => {
   const UsersList = async () => {
     try {
       const response = await axios.get(
-        "${baseURL}/api/auth/university-list",
+        `${baseURL}/api/auth/university-list`,
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -154,7 +154,7 @@ const useAuth = () => {
 
   const UserList = async () => {
     try {
-      const response = await axios.get("${baseURL}/api/auth/user/", {
+      const response = await axios.get(`${baseURL}/api/auth/user/`, {
         headers: {
           Authorization: `Token ${token}`,
           "Content-Type": "application/json",
@@ -170,7 +170,7 @@ const useAuth = () => {
     dispatch(setLoading(true));
     try {
       const response = await axios.patch(
-        "${baseURL}/api/auth/user/",
+        `${baseURL}/api/auth/user/`,
         userData,
         {
           headers: {
